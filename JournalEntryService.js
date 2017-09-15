@@ -29,19 +29,13 @@ function getScreenElements() {
 
 function saveEvent() {
 	btnSave.addEventListener('click', e=> {
-		var title = txtTitle.value;
-		var body = txtBody.value;
-		var id = parseInt(numId.value);
-		var entry = getFirebaseDatabase().ref("TestEntry/" + id);
+		var entry = getFirebaseDatabase().ref("TestEntry/" + numId.value);
 		var newEntry = entry.update(
-		//getFirebaseDatabase().ref('TestEntry').set(
 			{
-				Id: id,
-				Title: title,
-				Body: body
+				Id: parseInt(numId.value),
+				Title: txtTitle.value,
+				Body: txtBody.value
 			});
-		//const promise = getFirebaseAuth();
-		//promise.catch(e => console.log(e.message));
 	});
 }
 
