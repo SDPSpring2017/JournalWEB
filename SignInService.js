@@ -1,25 +1,13 @@
 // I know we should avoid global variables I just don't feel like figuring out how to do that :) 
-var txtEmail, txtPassword, btnSignIn, btnSignOut, btnSignUp,
-	dbRef = new Firebase("https://typodatabase.firebaseio.com"),
-	authClient;
-(function() {
-	// Needs to move into GlobalService.js cause all pages will need a connection to database so to avoid repetative code :) 
-	// Initialize Firebase
-  var config = {
-	apiKey: "AIzaSyCXzTuaN3VoNiTIigpfOV-Jzneg94Y6Bko",
-	authDomain: "typodatabase.firebaseapp.com",
-	databaseURL: "https://typodatabase.firebaseio.com",
-	projectId: "typodatabase",
-	storageBucket: "typodatabase.appspot.com",
-	messagingSenderId: "836867063447"
-  };
-  firebase.initializeApp(config); 
-	getScreenElements();
-	signInEvent();
-	authenticationMonitoring();
-   
-}());
+var txtEmail, txtPassword, btnSignIn, btnSignOut, btnSignUp, authClient, dbRef;
 
+function setUp()
+{
+	firebase.initializeApp(getConfig());
+	dbRef = firebase.database();
+	authenticationMonitoring();
+	getScreenElements();
+}
 
 function getScreenElements()
 {
@@ -34,22 +22,20 @@ function getScreenElements()
 
 function signInEvent()
 {
-	btnSignIn.addEventListener('click', e=> {
-		authClient = new FirebaseSimpleLogin(dbRef, function(error, user) {
-			if (error) 
-			{
-				console.log(error);
-			}
-			else if (user) {
-				// user authenticated with Firebase
-				console.log("User ID: " + user.uid + ", Provider: " + user.provider);
-				authClient.login("password");
-			}
-			else {
-				// user is logged out
-				alert("No users are currently logged in");
-			}
-		});
+	authClient = new FirebaseSimpleLogin(dbRef, function(error, user) {
+		if (error) 
+		{
+			console.log(error);
+		}
+		else if (user) {
+			// user authenticated with Firebase
+			console.log("User ID: " + user.uid + ", Provider: " + user.provider);
+			authClient.login("password");
+		}
+		else {
+			// user is logged out
+			alert("No users are currently logged in");
+		}
 	});
 }
 
@@ -69,23 +55,21 @@ function authenticationMonitoring()
 // do we want to move sign up into a separate service?
 function signUpEvent()
 {
-	btnSignUp.addEventListener('click', e => {
-		var email = txtEmail.val();
-		var password = txtPassword.val();
-		authClient.createUser(email, password, 
-			function(err, user){
-				if(!err) {
-					dbRef.child("user").child(user.uid).set({
-						FName: "I will",
-						LName: "fix this later but I'm tired yall",
-						Email: email,
-						Password: password
-					})
-				}
-				else {
-					alert(error);
-				}
-		})
+	var email = txtEmail.val();
+	var password = txtPassword.val();
+	authClient.createUser(email, password, 
+		function(err, user){
+			if(!err) {
+				dbRef.child("user").child(user.uid).set({
+					FName: "I will",
+					LName: "fix this later but I'm tired yall",
+					Email: email,
+					Password: password
+				})
+			}
+			else {
+				alert(error);
+			}
 	})
 }
 
@@ -110,9 +94,7 @@ function realTimeAuthListenter()
 	});
 }
 
-function SingOut()
+function SignOutEvent()
 {
-	btnSignOut.addEventListener('click', e=> {
-		authClient.logout();
-	})
+	authClient.logout();
 }
