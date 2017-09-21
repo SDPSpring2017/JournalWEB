@@ -20,17 +20,6 @@ function getJournals() {
 
 }
 
-function saveEvent() {
-	btnSave.addEventListener('click', e=> {
-		var entry = getFirebaseDatabase().ref("TestEntry/" + numId.value);
-		var newEntry = entry.update(
-			{
-				Id: parseInt(numId.value),
-				Title: txtTitle.value,
-				Body: txtBody.value
-			});
-	});
-}
 
 function getFirebaseAuth() {
 	return firebase.auth();

@@ -1,10 +1,14 @@
-var txtTitle, numId, txtBody, btnSave;
+var txtTitle, numId, txtBody, btnSave, btnEntries, entriesDisplay;
 var database;
+var entries;
 function setUp()
 {
 	firebase.initializeApp(getConfig());
 	database = firebase.database();
+	var ref = database.ref("TestEntry");
+	clubs = ref.on('value', getEntryData);
 	getScreenElements();
+	//displayEntries();
 }
 
 function getScreenElements() {
@@ -13,11 +17,37 @@ function getScreenElements() {
 	numId = document.getElementById("numId");
 	txtBody = document.getElementById('txtBody');
 	btnSave = document.getElementById('btnSave');
+	btnEntries = document.getElementById('btnEntries');
+	entriesDisplay = document.getElementById('entriesDisplay');
+}
+
+function getEntryData(data) {
+	var dataValue = data.val();
+	console.log(dataValue);
+	entries = dataValue;
+}
+
+function displayEntries() {
+	var entryValues = Object.values(entries);
+	entriesDisplay.innerHTML = "";
+
+	entryValues.forEach(function (entry) {
+		entriesDisplay.innerHTML +=
+			'<table>\
+				<tbody>\
+					<tr>\
+						<td>' + entry.Id + ':' + entry.Title + '</td>\
+					</tr>\
+						<td>' + entry.Body + '</td>\
+					<tr>\
+				</tbody>\
+		</table>';
+	});
 }
 
 function saveEvent() {
 	var entry = database.ref("TestEntry/" + numId.value);
-	var newEntry = entry.update(
+	entry.update(
 		{
 			Id: parseInt(numId.value),
 			Title: txtTitle.value,
