@@ -30,6 +30,8 @@ function signInEvent()
         console.log(getFirebaseAuth());
         promise.catch(e => console.log(e.message));
 });
+    //need to put a check here later
+    window.location = "JournalView.html";
 }
 
 // do we want to move sign up into a separate service?

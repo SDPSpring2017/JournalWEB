@@ -50,6 +50,7 @@ function SignUpEvent()
         {
         alert("There was a sign up error. Please try again.");
         }
+    window.location = "JournalView.html";
 		     
 }
 function createAuthenticationUser()
