@@ -22,8 +22,7 @@ function getJournals() {
 
 function CreateJournal(){
     
-   //var nextJournalId = database.ref("user").child(getCurrentUser().uid).child("Journals").orderByChild().limitToLast
-    database.ref("user").child(getCurrentUser().uid).child("Journals").child(1).set({
+    database.ref("user").child(getCurrentUser().uid).child("Journals").child(new Date().getTime()).set({
 					Title: "Testing",
                     DateCreated: + new Date()
 				});
