@@ -1,5 +1,5 @@
 // I know we should avoid global variables I just don't feel like figuring out how to do that :) 
-var txtEmail, txtPassword, btnSignIn, btnSignOut, btnSignUp, authClient, dbRef;
+var txtEmail, txtPassword, btnSignIn, btnSignOut, btnSignUp, dbRef;
 
 function setUp()
 {
@@ -12,7 +12,7 @@ function setUp()
 function getScreenElements()
 {
 	// Getting screen elements
-	// will break out into separate get statements to avoid global variables up top
+	// TODO will break out into separate get statements to avoid global variables up top
 	txtEmail = document.getElementById('txtEmail');
 	txtPassword = document.getElementById('txtPassword');
 	btnSignIn = document.getElementById('btnSignIn');
@@ -40,19 +40,14 @@ function signUpEvent()
 	
 }
 
-function getFirebaseAuth()
-{
-	return firebase.auth();
-}
-
-
-
 function signOutEvent()
 {
     btnSignOut.addEventListener('click', e=>
                                {
         getFirebaseAuth().signOut();
 });
+    if(!getCurrentUser)
+    alert("User is signed out");
     
 	
 }

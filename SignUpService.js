@@ -42,13 +42,13 @@ function SignUpEvent()
     
         if(!signUpError)
         {
-            var waitingCounter = 0;
-            while(!getFirebaseAuth().currentUser)
-                {
-                    ++waitingCounter;
-                    console.log("Waiting for current user to populate " + waitingCounter);
-                }
-            writeAccountDetails();
+            //have to wait for currentUser to be initialised before accessing their UID
+            setTimeout(function() { writeAccountDetails(); }, 3000);
+			      
+        }
+        else
+        {
+        alert("There was a sign up error. Please try again.");
         }
 		     
 }

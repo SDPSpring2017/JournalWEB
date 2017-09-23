@@ -28,3 +28,13 @@ function realTimeAuthListenter()
 	});
 }
 
+function getFirebaseAuth()
+{
+	return firebase.auth();
+}
+
+function getCurrentUser()
+{
+    return getFirebaseAuth().currentUser;
+}
+

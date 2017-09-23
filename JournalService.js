@@ -21,7 +21,3 @@ function getJournals() {
 }
 
 
-function getFirebaseAuth() {
-	return firebase.auth();
-}
-
