@@ -12,4 +12,19 @@ function getConfig() {
 	}
 }
 
+function realTimeAuthListenter()
+{
+   // listener for checking authentication state of user
+	firebase.auth().onAuthStateChanged(currentUser => {
+		if(currentUser)
+			{
+				console.log(currentUser + " " + currentUser.uid);
+			}
+		else
+			{
+				console.log('User is not signed in');
+			}
+		
+	});
+}
 

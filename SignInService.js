@@ -5,8 +5,8 @@ function setUp()
 {
 	firebase.initializeApp(getConfig());
 	dbRef = firebase.database();
-	authenticationMonitoring();
 	getScreenElements();
+    realTimeAuthListenter();
 }
 
 function getScreenElements()
@@ -22,55 +22,22 @@ function getScreenElements()
 
 function signInEvent()
 {
-	authClient = new FirebaseSimpleLogin(dbRef, function(error, user) {
-		if (error) 
-		{
-			console.log(error);
-		}
-		else if (user) {
-			// user authenticated with Firebase
-			console.log("User ID: " + user.uid + ", Provider: " + user.provider);
-			authClient.login("password");
-		}
-		else {
-			// user is logged out
-			alert("No users are currently logged in");
-		}
-	});
-}
-
-function authenticationMonitoring()
-{
-	var authRef = new Firebase("https://typodatabase.firebaseio.com/.info/authenticated");
-	authRef.on("value", function(snap) {
-		if (snap.val() === true) {
-			alert("authenticated");
-		}
-		else {
-			alert("not authenticated");
-		}
-	});
+	btnSignIn.addEventListener('click', e=>
+                               {
+        const email = txtEmail.value;
+        const password = txtPassword.value;
+       const promise = getFirebaseAuth().signInWithEmailAndPassword(email, password);
+        console.log(getFirebaseAuth());
+        promise.catch(e => console.log(e.message));
+});
 }
 
 // do we want to move sign up into a separate service?
 function signUpEvent()
 {
-	var email = txtEmail.val();
-	var password = txtPassword.val();
-	authClient.createUser(email, password, 
-		function(err, user){
-			if(!err) {
-				dbRef.child("user").child(user.uid).set({
-					FName: "I will",
-					LName: "fix this later but I'm tired yall",
-					Email: email,
-					Password: password
-				})
-			}
-			else {
-				alert(error);
-			}
-	})
+    window.location = "SignUpView.html";
+    //call function in sign up page
+	
 }
 
 function getFirebaseAuth()
@@ -78,23 +45,14 @@ function getFirebaseAuth()
 	return firebase.auth();
 }
 
-function realTimeAuthListenter()
-{
-   // listener for checking authentication state of user
-	firebase.auth().onAuthStateChanged(currentUser => {
-		if(currentUser)
-			{
-				console.log(currentUser);
-			}
-		else
-			{
-				console.log('User is not signed in');
-			}
-		
-	});
-}
 
-function SignOutEvent()
+
+function signOutEvent()
 {
-	authClient.logout();
+    btnSignOut.addEventListener('click', e=>
+                               {
+        getFirebaseAuth().signOut();
+});
+    
+	
 }
