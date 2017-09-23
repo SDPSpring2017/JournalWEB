@@ -42,7 +42,7 @@ function SignUpEvent()
     
         if(!signUpError)
         {
-            //have to wait for currentUser to be initialised before accessing their UID
+            //have to wait for currentUser to be initialised before accessing their UID so I'm giving it 3 seconds
             setTimeout(function() { writeAccountDetails(); }, 3000);
 			      
         }
@@ -64,7 +64,7 @@ function createAuthenticationUser()
 }
 function writeAccountDetails()
 {
-     database.ref("user").child(getFirebaseAuth().currentUser.uid).set({
+     database.ref("user").child(getCurrentUser().uid).child("AccountDetails").set({
 					FName: getTxtFNameInput(),
 					LName: getTxtLNameInput(),
 					Email: getTxtEmailInput(),
