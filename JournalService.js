@@ -1,13 +1,12 @@
-var txtTitle, numId, txtBody, btnSave, database, journals;
+var txtTitle, numId, txtBody, btnSave, database, journals, entriesList;
 
 function setUp()
 {
 	getScreenElements();
 	firebase.initializeApp(getConfig());
 	database = firebase.database();
-	var ref = database.ref("user/" + getCurrentUser().uid + "/Journals");
+	var ref = database.ref("user/" + "KPkcMOMmtCU495XZ6aOg72z34vr2" + "/Journals");
 	ref.on('value', getJournals);
-	displayJournals();
 }
 
 function getScreenElements() {
@@ -22,19 +21,23 @@ function getJournals(data) {
 	var dataValue = data.val();
 	console.log(dataValue);
 	journals = dataValue;
+	displayJournals();
 }
 
 function displayJournals() {
 	var journalValues = Object.values(journals);
 	journalsDisplay.innerHTML = "";
-
-	journalsValues.forEach(function (journal) {
+	entriesList = new Array(journalValues.length);
+	var count = 0;
+	journalValues.forEach(function (journal) {
 		journalsDisplay.innerHTML +=
 			'<div>\
-				<button>' + 
+				<button onclick="displayEntries(' + count + ')">' + 
 					journal.Title +
 				'</button>\
 		</div>';
+		entriesList[count] = journal;
+		count += 1;
 	});
 }
 
@@ -46,4 +49,27 @@ function CreateJournal(){
 				});
 }
 
+function getEntryData(data) {
+	var dataValue = data.val();
+	console.log(dataValue);
+	entries = dataValue;
+	displayEntries();
+}
 
+function displayEntries(journalNumber) {
+	var entryValues = Object.values(entriesList[journalNumber].Entries);
+	entriesDisplay.innerHTML = "";
+
+	entryValues.forEach(function (entry) {
+		entriesDisplay.innerHTML +=
+			'<table>\
+				<tbody>\
+					<tr>\
+						<td>' + entry.Id + ':' + entry.Title + '</td>\
+					</tr>\
+						<td>' + entry.Body + '</td>\
+					<tr>\
+				</tbody>\
+		</table>';
+	});
+}
