@@ -19,10 +19,12 @@ function realTimeAuthListenter()
 		if(currentUser)
 			{
 				console.log(currentUser + " " + currentUser.uid);
+				return true;
 			}
 		else
 			{
 				console.log('User is not signed in');
+				return false;
 			}
 		
 	});
