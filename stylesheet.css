@@ -1,15 +1,39 @@
 button {
-	padding: 20px 20px 20px 20px;
+	padding: 10px 10px 10px 10px;
 }
 
 h1 {
 	color: white; 
-	text-align: left; 
+	text-align: center; 
 	letter-spacing: 2px; 
 	font-family: "Arial", sans, sans-serif; 
 	font-variant: small-caps; 
+	font-size: 50px; 
 }
 
 body {
 	background-color: #3C90AB; 
+}
+
+p {
+	color: white; 
+}
+
+th, td {
+	padding: 15px;
+	text-align: left; 
+}
+
+table {
+	margin: auto; 
+}
+
+td {
+	font-size: 18px; 
+	color: white; 
+	font-family: "Arial", sans, sans-serif; 
+}
+
+#textinput {
+	padding: 10px 10px 10px 10px; 
 }
