@@ -1,3 +1,15 @@
 button {
 	padding: 20px 20px 20px 20px;
 }
+
+h1 {
+	color: white; 
+	text-align: left; 
+	letter-spacing: 2px; 
+	font-family: "Arial", sans, sans-serif; 
+	font-variant: small-caps; 
+}
+
+body {
+	background-color: #3C90AB; 
+}
