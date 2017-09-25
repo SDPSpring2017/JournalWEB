@@ -6,9 +6,8 @@ function setUp()
 	firebase.initializeApp(getConfig());
 	database = firebase.database();
 	var ref = database.ref("TestEntry");
-	clubs = ref.on('value', getEntryData);
+	ref.on('value', getEntryData);
 	getScreenElements();
-	//displayEntries();
 }
 
 function getScreenElements() {
@@ -25,6 +24,7 @@ function getEntryData(data) {
 	var dataValue = data.val();
 	console.log(dataValue);
 	entries = dataValue;
+	displayEntries();
 }
 
 function displayEntries() {
