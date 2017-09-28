@@ -21,20 +21,21 @@ function setUpDatabase()
 function setUpJournals()
 {
     //TODO check if they have any journals in the first place
-    var journalsRef = database.ref("user").child(getCurrentUser().uid).child("Journals");
-	journalsRef.on('value', getJournals);
-	displayJournals();
+    var journalsRef = database.ref("user/" + getCurrentUser().uid + "/Journals");
+    journals = journalsRef.once('value').then(function (snapshot){
+        getJournals(snapshot);
+    })
+    
 }
 
 function getJournals(data) {
 	var dataValue = data.val();
 	console.log(dataValue);
 	journals = dataValue;
-	displayJournals();
+    	displayJournals();
 }
 
 function displayJournals() {
-    //TODO this isn't working
 	var journalValues = Object.values(journals);
 	journalsDisplay.innerHTML = "";
 	entriesList = new Array(journalValues.length);
