@@ -4,11 +4,15 @@ button {
 
 h1 {
 	color: white; 
-	text-align: center; 
+	text-align: left; 
 	letter-spacing: 2px; 
 	font-family: "Arial", sans, sans-serif; 
 	font-variant: small-caps; 
 	font-size: 50px; 
+	margin-top: 50px; 
+	margin-bottom: 10px; 
+	margin-left: 15px; 
+	margin-right: 100px; 
 }
 
 body {
@@ -26,6 +30,7 @@ th, td {
 
 table {
 	margin: auto; 
+	align-self: left; 
 }
 
 td {
@@ -36,4 +41,17 @@ td {
 
 #textinput {
 	padding: 10px 10px 10px 10px; 
+}
+
+li {
+	display: inline; 
+	padding: 15px; 
+}
+
+ul {
+    list-style-type: none;
+    margin: 0;
+	padding: 0;
+	background-color: #f1f1f1; 
+	padding: 20px; 
 }
