@@ -28,10 +28,13 @@ function signInEvent()
         const password = txtPassword.value;
        const promise = getFirebaseAuth().signInWithEmailAndPassword(email, password);
         console.log(getFirebaseAuth());
-        promise.catch(e => console.log(e.message));
-});
-    //need to put a check here later
+        promise.catch(e => {console.log("Error: "); console.log(e.message)});
+       firebase.auth().onAuthStateChanged(function(currentUser) {
+    if (currentUser) {
     window.location = "JournalView.html";
+  }});
+});
+
 }
 
 // do we want to move sign up into a separate service?

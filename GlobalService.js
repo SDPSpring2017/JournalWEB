@@ -18,11 +18,13 @@ function realTimeAuthListenter()
 	firebase.auth().onAuthStateChanged(currentUser => {
 		if(currentUser)
 			{
-				console.log(currentUser + " " + currentUser.uid);
+				console.log("The current user's uid " + currentUser.uid);
+				return true;
 			}
 		else
 			{
 				console.log('User is not signed in');
+				return false;
 			}
 		
 	});
