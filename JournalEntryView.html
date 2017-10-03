@@ -6,15 +6,10 @@
     <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
     </head>
     <body onload="setUp()">
-        <input id="txtTitle" type="text" placeholder="Entry Title"><input id="numId" type="number" placeholder="Entry ID"><br>
-        <textarea id="txtBody" type="text" placeholder="Entry Body"></textarea>
 		
-        <button id="btnSave" onclick="saveEvent()">
-			Save
-        </button>
-		
-		<button id="btnEntries" onclick="displayEntries()">Display Entries</button>
+		<button id="btnNewEntry" onclick="displayEntryForm()">New Entry</button>
 		<div id="entriesDisplay"></div>
+		<div id="contentDisplay"></div>
         
      <script src="GlobalService.js" type="text/javascript"></script>
         <script src="JournalEntryService.js" type="text/javascript"></script>
