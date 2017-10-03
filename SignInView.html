@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <meta charset="utf-8">
     <title>Firebase Tut Uno</title>
     <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
@@ -8,6 +9,7 @@
         <script src="SignInService.js" type="text/javascript"></script>
     </head>
     <body onload="setUp()">
+<<<<<<< HEAD
         <input id="txtEmail" type="email" placeholder="Enter your email here">
         
         <input id="txtPassword" type="password" placeholder="Enter your password here">
@@ -23,6 +25,28 @@
         <button id="btnSignOut" onclick="signOutEvent()">
         Sign Out
         </button>
+=======
+        <ul> 
+            <li><a href="SignUpView.html">Register</a></li>
+            <li><a href="SignInView.html">Sign In</a></li>
+            <li><a href="JournalEntryView.html">Journal</a></li>
+        </ul>
+        <h1> Sign In </h1>
+        <table align="left"> 
+            <tr> 
+                <td>Email</td>
+                <td><input id="textinput" id="txtEmail" type="email" placeholder="Enter your email here"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input id="textinput" id="txtPassword" type="password" placeholder="Enter your password here"></td>
+            </tr>
+            <tr> 
+                <td><button id="btnSignIn" onclick="signInEvent()">Sign In</button></td>
+                <td><button id="btnSignUp" onclick="signUpEvent()">Sign Up</button></td>
+            </tr>
+        </table>
+>>>>>>> Styling
         
      </body>
     
