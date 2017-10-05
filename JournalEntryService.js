@@ -61,7 +61,7 @@ function displayEntries() {
 	}
 	else
 	{
-		entriesDisplay.innerHTML = "No entries to display"
+        entriesDisplay.innerHTML = "No entries to display";
 	}
 }
 
