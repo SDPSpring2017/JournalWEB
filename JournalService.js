@@ -38,56 +38,65 @@ function getJournals(data) {
 function displayJournals() {
 	var journalValues = Object.values(journals);
 	journalsDisplay.innerHTML = "";
-	entriesList = new Array(journalValues.length);
-	var count = 0;
+    entriesList = new Array(journalValues.length);
 	journalValues.forEach(function (journal) {
 		if (journal != "") {
 			journalsDisplay.innerHTML +=
 				'<div>\
-					<button onclick="displayEntries(' + count + ')">' +
+					<button onclick="displayEntries(' + journal.DateCreated + ')">' +
 						journal.Title +
 					'</button>\
 				</div>';
-			entriesList[count] = journal;
-			count += 1;
+            entriesList.push(journal);// so why are we putting journals into the entry list tho?
 		}
 	});
 }
 
 function CreateJournal(){
 	//TODO check if they have any journals in the first place
-	database.ref("user").child(getCurrentUser().uid).child("Journals").child(new Date().getTime()).set(
+   document.getElementById("newJournal").style.visibility = "visible";
+    /*database.ref("user").child(getCurrentUser().uid).child("Journals").child(new Date().getTime()).set(
 	{
 		Title: "Testing",
 		DateCreated: + new Date()
-	});
+	});*/
 }
 
-function displayEntries(journalNumber) {
-	var entryValues = Object.values(entriesList[journalNumber].Entries);
-	entriesDisplay.innerHTML = "";
-	entryValues.forEach(function (entry) {
+function displayEntries(journalDateCreated) {
+	
+   database.ref("user/" + getCurrentUser().uid + "/Journals/" + journalDateCreated + "/Entries").once('value').then(function (entries){
+     entriesDisplay.innerHTML = "";
+       if(entries.length ==0)
+           {
+               entriesDisplay.innerHTML = "This journal does not contain any entries";
+           }
+       else
+           {
+               	entries.forEach(function (entry) {
 		if (entry != "") {
 			entriesDisplay.innerHTML +=
 				'<table>\
 				<tbody>\
 					<tr>\
-						<td>' + entry.Id + ':' + entry.Title + '</td>\
+						<td>' + entry.val().Id + ':' + entry.val().Title + '</td>\
 					</tr>\
-						<td>' + entry.Summary + '</td>\
+						<td>' + entry.val().Summary + '</td>\
 					<tr>\
 				</tbody>\
 		</table>';
 		}
 	});
 	entriesDisplay.innerHTML +=
-		'<button onclick="goToJournal(' + journalNumber + ')">' +
+		'<button onclick="goToJournal(' + journalDateCreated + ')">' +
 			"Go to journal" +
 		'</button>';
+           }
+   });
+   
+   
 }
 
-function goToJournal(journalNumber) {
-	localStorage.setItem("SelectedJournal", entriesList[journalNumber].DateCreated)
+function goToJournal(journalDateCreated) {
+    localStorage.setItem("SelectedJournal", journalDateCreated)
 	window.location = "JournalEntryView.html";
 }
-

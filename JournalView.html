@@ -9,10 +9,15 @@
     </head>
     <body onload="setUp()">
         <button id="CreateJournal" onClick = "CreateJournal()">
-        Create New Journal id 1
+        Create New Journal
         </button>
+        
 		
-		<div id="journalsDisplay"></div>
+		<div id="journalsDisplay">
+        <div id="newJournal" style="visibility: hidden">
+            <input type="text" id="newJournalTitle"/>
+            </div>
+        </div>
 		<div id="entriesDisplay"></div>
     </body>
 </html>
