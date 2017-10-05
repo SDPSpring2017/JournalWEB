@@ -1,29 +1,50 @@
-function AttachFile() {
-    var x = document.getElementById("myFile");
-    var txt = "";
-    if ('files' in x) {
-        if (x.files.length == 0) {
-            txt = "Select one or more files.";
-        } else {
-            for (var i = 0; i < x.files.length; i++) {
-                txt += "<br><strong>" + (i + 1) + ". file</strong><br>";
-                var file = x.files[i];
-                if ('name' in file) {
-                    txt += "name: " + file.name + "<br>";
-                }
-                if ('size' in file) {
-                    txt += "size: " + file.size + " bytes <br>";
-                }
-            }
+var database;
+function setUp() {
+    setUpDatabase();
+    firebase.auth().onAuthStateChanged(function (currentUser) {
+        if (currentUser) {
+            console.log("User loaded");
         }
-    }
-    else {
-        if (x.value == "") {
-            txt += "Select one or more files.";
-        } else {
-            txt += "The files property is not supported by your browser!";
-            txt += "<br>The path of the selected file: " + x.value; // If the browser does not support the files property, it will return the path of the selected file instead. 
-        }
-    }
-    document.getElementById("demo").innerHTML = txt;
+    });
 }
+
+function setUpDatabase() {
+    firebase.initializeApp(getConfig());
+    database = firebase.database();
+    realTimeAuthListenter();
+}
+
+
+
+//Get elements
+var uploader = document.getElementById('uploader');
+var fileButton = document.getElementById('fileButton');
+
+//Listen for file selection
+fileButton.addEventListener('change', function (e) {
+    //Get file
+    var file = e.target.files[0];
+
+    //Create a storage ref
+    var storageRef = firebase.storage().ref('Attach_Files_Of_Users'
+        + file.name);
+
+    //Upload file
+    var task = storageRef.put(file);
+
+    //Update progress bar
+    task.on('state_changed',
+        function progress(snapshot) {
+            var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            uploader.value = percentage;
+        },
+
+        function error(err) {
+
+        },
+
+        function complete() {
+
+        }
+    );
+});
