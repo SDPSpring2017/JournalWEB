@@ -1,4 +1,4 @@
-var txtTitle, numId, txtBody, btnEntries, entriesDisplay, contentDisplay;
+var btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
 var entriesList;
@@ -71,35 +71,47 @@ function displayEntryContent(entryNumber) {
 		entry.Id + ': ' + entry.Title + '<br>' + entry.Date + 
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes;
+		'<br>Outcomes<br>' + entry.Outcomes +
+		'<br><button id="btnEdit" onclick="editEvent(' + entryNumber + ')">Edit</button>';
 }
 
-function displayEntryForm() {
+function displayEntryForm(title, id, summary, decisions, outcomes) {
 	contentDisplay.innerHTML = 
-		'<input id="txtTitle" type="text" placeholder="Entry Title"><input id="numId" type="number" placeholder="Entry ID"><br>\
-		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary"></textarea></label><br>\
-		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions"></textarea></label><br>\
-		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes"></textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent()">\
-			Save\
-		</button>';
+		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><input id="numId" type="number" placeholder="Entry ID" value="' + id + '"><br>\
+		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
+		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
+		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
+		<button id="btnSave" onclick="saveEvent()">Save</button>';
+}
+
+function editEvent(entryNumber) {
+	var entry = entriesList[entryNumber];
+	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
 
 function saveEvent() {
-	txtTitle = document.getElementById('txtTitle');
-	numId = document.getElementById("numId");
-	txtBody = document.getElementById('txtBody');
 
+	var numId = document.getElementById("numId");
+	var txtTitle = document.getElementById('txtTitle');
+	var txtSummary = document.getElementById('txtSummary').value;
+	var txtDecisions = document.getElementById('txtDecisions').value;
+	var txtOutcomes = document.getElementById('txtOutcomes').value;
+
+	var archive;
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + numId.value);
-	entry.update(
-		{
-			Id: parseInt(document.getElementById("numId").value),
-			Title: document.getElementById('txtTitle').value,
-			Summary: document.getElementById('txtSummary').value,
-			Decisions: document.getElementById('txtDecisions').value,
-			Outcomes: document.getElementById('txtOutcomes').value,
+	entry.once('value').then(function (snapshot) {
+		entry.update({
+			Id: parseInt(numId.value),
+			Title: txtTitle,
+			Summary: txtSummary,
+			Decisions: txtDecisions,
+			Outcomes: txtOutcomes,
 			Date: Date()
 		});
+		if (snapshot.val().Id == parseInt(numId.value)) {
+			entry.child("Archive").update(snapshot.val());
+		}
+	});
 
 	setUpJournal();
 	contentDisplay.innerHTML = "Saved";
