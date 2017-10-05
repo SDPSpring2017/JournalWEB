@@ -25,9 +25,19 @@
     </head>
     <body onload="setUp()">
 		
-		<button id="btnNewEntry" class="btn btn-default" onclick="displayEntryForm()">New Entry</button>
-		<div id="entriesDisplay"></div>
+		<button id="btnNewEntry" onclick="displayEntryForm()">New Entry</button>
+		<div id="entriesDisplay">
+        <div id="entryStatusActions" style="display: none">
+        <button id="btnDeleteEntry" onclick="deleteEntry()">
+        Delete
+        </button>
+        <button id="btnHideEntry" onclick="hideEntry()">
+        Hide
+        </button>            
+        </div>
+        </div>
 		<div id="contentDisplay"></div>
+        
         
      <script src="GlobalService.js" type="text/javascript"></script>
         <script src="JournalEntryService.js" type="text/javascript"></script>

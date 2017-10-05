@@ -1,4 +1,4 @@
-var txtTitle, numId, txtBody, btnSave, database, journals, entriesList;
+var txtTitle, numId, txtBody, btnSave, database, journals;
 
 function setUp()
 {
@@ -32,13 +32,13 @@ function getJournals(data) {
 	var dataValue = data.val();
 	console.log(dataValue);
 	journals = dataValue;
-		displayJournals();
+    displayJournals();
 }
 
 function displayJournals() {
+    //TODO add listener for new journals
 	var journalValues = Object.values(journals);
 	journalsDisplay.innerHTML = "";
-    entriesList = new Array(journalValues.length);
 	journalValues.forEach(function (journal) {
 		if (journal != "") {
 			journalsDisplay.innerHTML +=
@@ -46,21 +46,34 @@ function displayJournals() {
 					<button onclick="displayEntries(' + journal.DateCreated + ')">' +
 						journal.Title +
 					'</button>\
+                    <label>Date Created: '+ journal.DateCreated +'\
 				</div>';
-            entriesList.push(journal);// so why are we putting journals into the entry list tho?
 		}
 	});
 }
 
-function CreateJournal(){
-	//TODO check if they have any journals in the first place
-   document.getElementById("newJournal").style.visibility = "visible";
-    /*database.ref("user").child(getCurrentUser().uid).child("Journals").child(new Date().getTime()).set(
-	{
-		Title: "Testing",
-		DateCreated: + new Date()
-	});*/
+function CreateNewJournal(){
+   document.getElementById("newJournal").style.display = "block";      
 }
+function submitCreateJournal()
+{
+   var newJournalTitle = document.getElementById("newJournalTitle").value;
+    if(newJournalTitle != null && newJournalTitle != "")
+    {
+      database.ref("user").child(getCurrentUser().uid).child("Journals").child(new Date().getTime()).set(
+	{
+		Title: newJournalTitle,
+		DateCreated: + new Date()
+	});
+    alert("New journal " + newJournalTitle + " has been created");
+    setUpJournals();
+    }
+    else
+    {
+        alert("Please type a valid title to create the new journal.");    
+    }
+}
+
 
 function displayEntries(journalDateCreated) {
 	
