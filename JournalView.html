@@ -13,16 +13,17 @@
      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body onload="setUp()">
-        <button id="CreateJournal" onClick = "CreateJournal()">
+        <button id="CreateJournal" onClick = " CreateNewJournal()">
         Create New Journal
         </button>
         
 		
 		<div id="journalsDisplay">
-        <div id="newJournal" style="visibility: hidden">
-            <input type="text" id="newJournalTitle"/>
-            </div>
         </div>
+        <div id="newJournal" style="display : none">
+            <input id="newJournalTitle" type="text" placeholder="Enter your Journal Title here" />
+            <button id="submitCreateJournal" onclick="submitCreateJournal()">Create New Journal</button>
+            </div>
 		<div id="entriesDisplay"></div>
     </body>
 </html>

@@ -1,7 +1,6 @@
-var btnEntries, entriesDisplay, contentDisplay;
+var txtTitle, numId, txtBody, btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
-var entriesList;
 function setUp()
 {
 	setUpDatabase();
@@ -44,77 +43,92 @@ function displayEntries() {
 	var entryValues = Object.values(entries);
 	if(entryValues != "") {
 		entriesDisplay.innerHTML = "";
-		entriesList = new Array(entryValues.length);
-		var count = 0;
-		entryValues.forEach(function (entry) {
+        
+        entryValues.forEach(function(entry){
 			if (entry != "") {
 				entriesDisplay.innerHTML +=
 					'<div>\
-						<button onclick="displayEntryContent(' + count + ')">' +
+						<button onclick="displayEntryContent(' + entry.Id + ')">' +
 							entry.Date +
 						'</button>\
+                        <button onclick = "deleteEntry('+ entry.Id + ')"> + Delete </button>\
+                        <button onclick = "hideEntry('+ entry.Id + ')"> + Hide </button>\
 					</div>';
-				entriesList[count] = entry;
-				count += 1;
 			}
-		});
-	}
+
+	});
+    }
 	else
 	{
         entriesDisplay.innerHTML = "No entries to display";
 	}
+
+		
+}
+function findEntry(entryId)
+{
+    entries.forEach(function(entry){
+       if(entry.Id == entryId)
+           return entry;
+    });
+    return null;
 }
 
-function displayEntryContent(entryNumber) {
-	var entry = entriesList[entryNumber];
-	contentDisplay.innerHTML =
+function displayEntryContent(entryId) {
+	var entry = findEntry(entryId);
+    if(entry != null)
+        {
+            contentDisplay.innerHTML =
 		entry.Id + ': ' + entry.Title + '<br>' + entry.Date + 
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes +
-		'<br><button id="btnEdit" onclick="editEvent(' + entryNumber + ')">Edit</button>';
+		'<br>Outcomes<br>' + entry.Outcomes;
+            //TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
+        }
+	
 }
 
-function displayEntryForm(title, id, summary, decisions, outcomes) {
+function displayEntryForm() {
 	contentDisplay.innerHTML = 
-		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><input id="numId" type="number" placeholder="Entry ID" value="' + id + '"><br>\
-		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
-		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
-		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent()">Save</button>';
-}
-
-function editEvent(entryNumber) {
-	var entry = entriesList[entryNumber];
-	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
+		'<input id="txtTitle" type="text" placeholder="Entry Title"><input id="numId" type="number" placeholder="Entry ID"><br>\
+		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary"></textarea></label><br>\
+		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions"></textarea></label><br>\
+		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes"></textarea></label><br>\
+		<button id="btnSave" onclick="saveEvent()">\
+			Save\
+		</button>';
 }
 
 function saveEvent() {
+	txtTitle = document.getElementById('txtTitle');
+	numId = document.getElementById("numId");
+	txtBody = document.getElementById('txtBody');
 
-	var numId = document.getElementById("numId");
-	var txtTitle = document.getElementById('txtTitle');
-	var txtSummary = document.getElementById('txtSummary').value;
-	var txtDecisions = document.getElementById('txtDecisions').value;
-	var txtOutcomes = document.getElementById('txtOutcomes').value;
-
-	var archive;
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + numId.value);
-	entry.once('value').then(function (snapshot) {
-		entry.update({
-			Id: parseInt(numId.value),
-			Title: txtTitle,
-			Summary: txtSummary,
-			Decisions: txtDecisions,
-			Outcomes: txtOutcomes,
+	entry.update(
+		{
+			Id: parseInt(document.getElementById("numId").value),
+			Title: document.getElementById('txtTitle').value,
+			Summary: document.getElementById('txtSummary').value,
+			Decisions: document.getElementById('txtDecisions').value,
+			Outcomes: document.getElementById('txtOutcomes').value,
 			Date: Date()
 		});
-		if (snapshot.val().Id == parseInt(numId.value)) {
-			entry.child("Archive").update(snapshot.val());
-		}
-	});
 
 	setUpJournal();
 	contentDisplay.innerHTML = "Saved";
+}
+    
+function deleteEntry(entryId)
+{
+    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries").orderByChild("Id").equalTo(entryId);
+	entries = currentEntryRef.once('value').then(function (entry) {
+		entry.update({ IsDeleted: 1})//hope this doesn't overwrite everything else in the entry 
+	});
+}
+function hideEntry(entryId)
+{
+    // update entry to have ishidden = 1
 }
 
 function getFirebaseAuth() {
