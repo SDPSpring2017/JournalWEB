@@ -13,3 +13,4 @@ h1 {
 table td {
     padding: 10px 10px 10px 10px; 
 }
+.btnDeleted {background-color: red;}/*example of changing button color of entry based on status, this class is referenced in JournalEntryService*/

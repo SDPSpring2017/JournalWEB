@@ -26,15 +26,15 @@
     <body onload="setUp()">
 		
 		<button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button>
-		<div id="entriesDisplay">
-        <div id="entryStatusActions" style="display: none">
-        <button id="btnDeleteEntry" class="btn btn-info" onclick="deleteEntry()">
-        Delete
-        </button>
-        <button id="btnHideEntry" class="btn btn-info" onclick="hideEntry()">
-        Hide
-        </button>            
+        <div id="entryStatusFilter">
+        Show entries that are:
+        <input id="activeEntryCB" type="checkbox" checked> Active 
+        <input id="deletedEntryCB" type="checkbox"> Deleted 
+        <input id="hiddenEntryCB" type="checkbox">
+        Hidden
+        <button id="btnFilter" class="btn btn-info" onclick="filterEntriesByStatus()">Filter</button>
         </div>
+		<div id="entriesDisplay">
         </div>
 		<div id="contentDisplay"></div>
         

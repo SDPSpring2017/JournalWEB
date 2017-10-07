@@ -1,6 +1,7 @@
 var txtTitle, numId, txtBody, btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
+var showDeleted = false, showHidden = false, showActive = true;
 function setUp()
 {
 	setUpDatabase();
@@ -11,6 +12,7 @@ function setUp()
 		}
 	});
 	getScreenElements();
+    
 }
 
 function setUpDatabase() {
@@ -42,29 +44,49 @@ function getEntryData(data) {
 function displayEntries() {
 	var entryValues = Object.values(entries);
 	if(entryValues != "") {
-		entriesDisplay.innerHTML = "";
+        entriesDisplay.innerHTML = "";
         
         entryValues.forEach(function(entry){
 			if (entry != "") {
-				entriesDisplay.innerHTML +=
+                if(entry.IsDeleted == 1 && showDeleted)
+                    {
+                        entriesDisplay.innerHTML +=
+					'<div>\
+						<button onclick="displayEntryContent(' + entry.Id + ')" class="btnDeleted">' +
+							entry.Date +
+						'</button>\
+					</div>';
+                    }
+                if(entry.IsHidden && showHidden)
+                    {
+                       entriesDisplay.innerHTML +=
 					'<div>\
 						<button onclick="displayEntryContent(' + entry.Id + ')">' +
 							entry.Date +
 						'</button>\
-                        <button onclick = "deleteEntry('+ entry.Id + ')"> + Delete </button>\
-                        <button onclick = "hideEntry('+ entry.Id + ')"> + Hide </button>\
 					</div>';
-			}
+                    }
+                if(entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive)
+                    {
+                        entriesDisplay.innerHTML +=
+					'<div>\
+						<button onclick="displayEntryContent(' + entry.Id + ')">' +
+							entry.Date +
+						'</button>\
+					</div>';
+                    }
+                    }
+				
+			});
 
-	});
-    }
-	else
+	}
+    else
 	{
         entriesDisplay.innerHTML = "No entries to display";
 	}
-
-		
 }
+
+
 function findEntry(entryId)
 {
     var entriesArray = Object.values(entries);
@@ -88,7 +110,9 @@ function displayEntryContent(entryId) {
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
 		'<br>Outcomes<br>' + entry.Outcomes +
-		'<br><button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+		'<br><button onclick = "deleteEntry('+ entry.Id + ')">Delete </button>' + 
+        '<button onclick = "hideEntry('+ entry.Id + ')">Hide </button>' +
+        '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
             //TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
         }
 	
@@ -110,6 +134,8 @@ function editEvent(entryId)
 }
 
 function saveEvent() {
+    var isDeleted = 0;
+    var isHidden = 0;
 	txtTitle = document.getElementById('txtTitle');
 	numId = document.getElementById("numId");
 	txtBody = document.getElementById('txtBody');
@@ -119,19 +145,28 @@ function saveEvent() {
 
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + numId.value);
     entry.once('value').then(function(snapshot) {
-       entry.update(
+        if(snapshot.val() != null)
+            {
+               isDeleted = snapshot.val().IsDeleted;
+               isHidden = snapshot.val().IsHidden;
+            }
+            entry.update(
 		{
 			Id: numId.value,
 			Title: txtTitle.value,
 			Summary: txtSummary.value,
 			Decisions: txtDecisions.value,
 			Outcomes: txtOutcomes.value,
-			Date: Date()
+			Date: Date(),
+            IsDeleted : isDeleted,
+            IsHidden : isHidden
 		}); 
         if(snapshot.val() != null && snapshot.val().Id == parseInt(numId.value))
             {
                 entry.child("Archive").update(snapshot.val());
             }
+        
+       
     });
 	
 
@@ -141,14 +176,26 @@ function saveEvent() {
     
 function deleteEntry(entryId)
 {
-    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries").orderByChild("Id").equalTo(entryId);
-	entries = currentEntryRef.once('value').then(function (entry) {
-		entry.update({ IsDeleted: 1})//hope this doesn't overwrite everything else in the entry 
+    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	currentEntryRef.once('value').then(function (entry) {
+		currentEntryRef.update({ IsDeleted: 1})
 	});
 }
 function hideEntry(entryId)
 {
-    // update entry to have ishidden = 1
+    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	currentEntryRef.once('value').then(function (entry) {
+		currentEntryRef.update({ IsHidden: 1})
+	});
+}
+function filterEntriesByStatus()
+{
+
+        showActive = document.getElementById("activeEntryCB").checked;
+        showDeleted = document.getElementById("deletedEntryCB").checked;
+        showHidden = document.getElementById("hiddenEntryCB").checked;
+        displayEntries();
+
 }
 
 function getFirebaseAuth() {
