@@ -2,17 +2,15 @@ var txtTitle, txtBody, btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
 var showDeleted = false, showHidden = false, showActive = true;
-function setUp()
-{
+function setUp() {
 	setUpDatabase();
-	firebase.auth().onAuthStateChanged(function(currentUser) {
+	firebase.auth().onAuthStateChanged(function (currentUser) {
 		if (currentUser) {
 			console.log("User loaded");
 			setUpJournal();
 		}
 	});
 	getScreenElements();
-    
 }
 
 function setUpDatabase() {
@@ -42,132 +40,131 @@ function getEntryData(data) {
 }
 
 function displayEntries() {
-    var entryValues = "";
-    if(entries != null)
-        {
-            entryValues = Object.values(entries);            
-        }
-    
-	if(entryValues != "") {
-        entriesDisplay.innerHTML = "";
-        
-        entryValues.forEach(function(entry){
-			if (entry != "") {
-                if(entry.IsDeleted == 1 && showDeleted)
-                    {
-                        entriesDisplay.innerHTML +=
+	var entryValues = "";
+	if (entries != null) {
+		entryValues = Object.values(entries);
+	}
+
+	if (entryValues != "") {
+		entriesDisplay.innerHTML = "";
+		entryValues.forEach(function (entry) {
+			entriesDisplay.innerHTML = "";
+			entryValues.forEach(function (entry) {
+				if (entry != "") {
+					if (entry.IsDeleted == 1 && showDeleted) {
+						entriesDisplay.innerHTML +=
 					'<div>\
 						<button onclick="displayEntryContent(' + entry.Id + ')" class="btnDeleted">' +
 							entry.Date +
 						'</button>\
 					</div>';
-                    }
-                if(entry.IsHidden && showHidden)
-                    {
-                       entriesDisplay.innerHTML +=
-					'<div>\
+					}
+					if (entry.IsHidden && showHidden) {
+						entriesDisplay.innerHTML +=
+						'<div>\
 						<button onclick="displayEntryContent(' + entry.Id + ')">' +
-							entry.Date +
-						'</button>\
+								entry.Date +
+							'</button>\
 					</div>';
-                    }
-                if(entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive)
-                    {
-                        entriesDisplay.innerHTML +=
-					'<div>\
+					}
+					if (entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive) {
+						entriesDisplay.innerHTML +=
+							'<div>\
 						<button onclick="displayEntryContent(' + entry.Id + ')">' +
-							entry.Date +
-						'</button>\
-					</div>';
-                    }
-                    }
-				
-			});
+								entry.Date +
+							'</button>\
+						<button onclick = "deleteEntry('+ entry.Id + ')"> + Delete </button>\
+						<button onclick = "hideEntry('+ entry.Id + ')"> + Hide </button>\
+						</div>';
+					}
+				}
 
+			});
+		});
 	}
-    else
-	{
-        entriesDisplay.innerHTML = "No entries to display";
+	else {
+		entriesDisplay.innerHTML = "No entries to display";
 	}
 }
 
 
-function findEntry(entryId)
-{
-    var entriesArray = Object.values(entries);
-    for(var i=0; i < entriesArray.length; i++)
-        {
-            if(entriesArray[i].Id == entryId)
-                {
-                    return entriesArray[i];
-                }
-        }
-
-    return null;
+function findEntry(entryId) {
+	var entriesArray = Object.values(entries);
+	for (var i = 0; i < entriesArray.length; i++) {
+		if (entriesArray[i].Id == entryId) {
+			return entriesArray[i];
+		}
+	}
+	return null;
 }
 
 function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
-    if(entry != null)
-        {
-            var deleteButton = '<button onclick = "deleteEntry('+ entry.Id + ')">Delete </button>';
-            var hideButton = '<button onclick = "hideEntry('+ entry.Id + ')">Hide </button>';
-            var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
-            if(entry.IsDeleted ==1)
-                {
-                    deleteButton = "";
-                    editButton = "";
-                    hideButton = "";
-                }
-            if(entry.IsHidden == 1)
-                {
-                    hideButton = '<button onclick = "unhideEntry('+ entry.Id + ')">Unhide </button>'
-                }
-            contentDisplay.innerHTML =
-		entry.Id + ': ' + entry.Title + '<br>' + entry.Date + 
+	if (entry != null) {
+		contentDisplay.innerHTML =
+		entry.Id + ': ' + entry.Title + '<br>' + entry.Date +
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes +'<br>'+
-		deleteButton + hideButton + editButton;
-        }
-	
+		'<br>Outcomes<br>' + entry.Outcomes +
+		'<br><button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>' +
+		'<br><button id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
+		//TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
+	}
+
+	if (entry != null) {
+		var deleteButton = '<button onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
+		var hideButton = '<button onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
+		var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+		if (entry.IsDeleted == 1) {
+			deleteButton = "";
+			editButton = "";
+			hideButton = "";
+		}
+		if (entry.IsHidden == 1) {
+			hideButton = '<button onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
+		}
+		contentDisplay.innerHTML =
+			entry.Id + ': ' + entry.Title + '<br>' + entry.Date +
+			'<br>Summary<br>' + entry.Summary +
+			'<br>Key Decisions<br>' + entry.Decisions +
+			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
+			deleteButton + hideButton + editButton;
+	}
 }
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
-	contentDisplay.innerHTML = 
+	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
 		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
 		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent('+id+')">Save</button>';
+		<button id="btnSave" onclick="saveEvent('+ id + ')">Save</button>';
 }
 
-function editEvent(entryId)
-{
-    var entry = findEntry(entryId);
-    displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
+function editEvent(entryId) {
+	var entry = findEntry(entryId);
+	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
 
 function saveEvent(id) {
-    var isDeleted = 0;
-    var isHidden = 0;
-    var entryId = (id == undefined)? new Date().getTime() : id;
-     
+	var isDeleted = 0;
+	var isHidden = 0;
+	var entryId = (id == undefined) ? new Date().getTime() : id;
+
 	txtTitle = document.getElementById('txtTitle');
 	txtBody = document.getElementById('txtBody');
-    txtSummary =  document.getElementById('txtSummary');
-    txtDecisions = document.getElementById('txtDecisions'); 
-    txtOutcomes = document.getElementById('txtOutcomes');
+	txtSummary = document.getElementById('txtSummary');
+	txtDecisions = document.getElementById('txtDecisions');
+	txtOutcomes = document.getElementById('txtOutcomes');
 
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
-    entry.once('value').then(function(snapshot) {
-        if(snapshot.val() != null)
-            {
-               isDeleted = snapshot.val().IsDeleted;
-               isHidden = snapshot.val().IsHidden;
-                entryId = snapshot.val().Id;
-            }
-            entry.update(
+	entry.once('value').then(function (snapshot) {
+		if (snapshot.val() != null) {
+			isDeleted = snapshot.val().IsDeleted;
+			isHidden = snapshot.val().IsHidden;
+			entryId = snapshot.val().Id;
+		}
+		entry.update(
 		{
 			Id: entryId,
 			Title: txtTitle.value,
@@ -175,60 +172,92 @@ function saveEvent(id) {
 			Decisions: txtDecisions.value,
 			Outcomes: txtOutcomes.value,
 			Date: Date(),
-            IsDeleted : isDeleted,
-            IsHidden : isHidden
-		}); 
-        if(snapshot.val() != null)
-            {
-                entry.child("Archive").update(snapshot.val());
-            }
-        
-       
-    });
-	
-
+			IsDeleted: isDeleted,
+			IsHidden: isHidden
+		});
+		if (snapshot.val() != null && snapshot.val().Id == parseInt(numId.value)) {
+			entry.child("Archive").update(snapshot.val());
+		}
+	});
+	if (snapshot.val() != null) {
+		entry.child("Archive").update(snapshot.val());
+	}
 	setUpJournal();
 }
-    
-function deleteEntry(entryId)
-{
-    if (confirm('Are you sure you want to deleted this entry?')) 
-    {
-        var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
-	currentEntryRef.once('value').then(function (entry) {
-		currentEntryRef.update({ IsDeleted: 1, IsHidden: 0})
-	});
-    alert("Entry has been deleted.");
-    }
-    
-    setUpJournal();
-}
-function hideEntry(entryId)
-{
-    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
-	currentEntryRef.once('value').then(function (entry) {
-		currentEntryRef.update({ IsHidden: 1})
-	});
-    alert("Entry has been hidden");
-    setUpJournal();
-}
-function unhideEntry(entryId)
-{
-    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
-	currentEntryRef.once('value').then(function (entry) {
-		currentEntryRef.update({ IsHidden: 0})
-	});
-    alert("Entry has been unhidden");
-    setUpJournal();
-}
-function filterEntriesByStatus()
-{
 
-        showActive = document.getElementById("activeEntryCB").checked;
-        showDeleted = document.getElementById("deletedEntryCB").checked;
-        showHidden = document.getElementById("hiddenEntryCB").checked;
-        displayEntries();
+function deleteEntry(entryId) {
+	var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries").orderByChild("Id").equalTo(entryId);
+	entries = currentEntryRef.once('value').then(function (entry) {
+		entry.update({ IsDeleted: 1 })//hope this doesn't overwrite everything else in the entry 
+		if (confirm('Are you sure you want to deleted this entry?')) {
+			var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+			currentEntryRef.once('value').then(function (entry) {
+				currentEntryRef.update({ IsDeleted: 1, IsHidden: 0 })
+			});
+			alert("Entry has been deleted.");
+		}
+		setUpJournal();
+	});
+}
 
+function hideEntry(entryId) {
+	// update entry to have ishidden = 1
+	var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	currentEntryRef.once('value').then(function (entry) {
+		currentEntryRef.update({ IsHidden: 1 })
+	});
+	alert("Entry has been hidden");
+	setUpJournal();
+}
+
+function unhideEntry(entryId) {
+	var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	currentEntryRef.once('value').then(function (entry) {
+		currentEntryRef.update({ IsHidden: 0 })
+	});
+	alert("Entry has been unhidden");
+	setUpJournal();
+}
+
+function getEntryHistory(entryId) {
+	var entryHistory = new Array();
+	var count = 0;
+	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);//).orderByChild("Id").equalTo(entryId);
+	entry.once('value').then(function (snapshot) {
+		var archive = snapshot.val().Archive;
+		while (archive != null) {
+			entryHistory[count] = archive;
+			count += 1;
+			archive = archive.Archive;
+		};
+		showEntryHistory(entryHistory);
+	});
+}
+
+function showEntryHistory(entryHistory) {
+	entryHistory = entryHistory.reverse();
+	contentDisplay.innerHTML += '<br><h3>Edit History</h3>';
+	if (entryHistory.length != 0) {
+		for (var i = 0; i < entryHistory.length - 1; ++i) {
+			contentDisplay.innerHTML +=
+				(i == 0 ? '<h4>Original entry</h3>Created on: ' : '<br><h4>Edit number ' + (i) + '</h3>Changed on:')
+			+ entryHistory[i].Date +
+			'<br>Title: ' + entryHistory[i].Title +
+			'<br>Summary<br>' + entryHistory[i].Summary +
+			'<br>Key Decisions<br>' + entryHistory[i].Decisions +
+			'<br>Outcomes<br>' + entryHistory[i].Outcomes;
+		}
+	}
+	else {
+		contentDisplay.innerHTML += "<br>No edits have been made";
+	}
+}
+
+function filterEntriesByStatus() {
+	showActive = document.getElementById("activeEntryCB").checked;
+	showDeleted = document.getElementById("deletedEntryCB").checked;
+	showHidden = document.getElementById("hiddenEntryCB").checked;
+	displayEntries();
 }
 
 function getFirebaseAuth() {
