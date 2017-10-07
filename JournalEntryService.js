@@ -67,10 +67,15 @@ function displayEntries() {
 }
 function findEntry(entryId)
 {
-    entries.forEach(function(entry){
-       if(entry.Id == entryId)
-           return entry;
-    });
+    var entriesArray = Object.values(entries);
+    for(var i=0; i < entriesArray.length; i++)
+        {
+            if(entriesArray[i].Id == entryId)
+                {
+                    return entriesArray[i];
+                }
+        }
+
     return null;
 }
 
@@ -82,38 +87,53 @@ function displayEntryContent(entryId) {
 		entry.Id + ': ' + entry.Title + '<br>' + entry.Date + 
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes;
+		'<br>Outcomes<br>' + entry.Outcomes +
+		'<br><button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
             //TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
         }
 	
 }
 
-function displayEntryForm() {
+function displayEntryForm(title, id, summary, decisions, outcomes) {
 	contentDisplay.innerHTML = 
-		'<input id="txtTitle" type="text" placeholder="Entry Title"><input id="numId" type="number" placeholder="Entry ID"><br>\
-		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary"></textarea></label><br>\
-		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions"></textarea></label><br>\
-		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes"></textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent()">\
-			Save\
-		</button>';
+		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><input id="numId" type="number" placeholder="Entry ID" value="' + id + '"><br>\
+		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
+		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
+		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
+		<button id="btnSave" onclick="saveEvent()">Save</button>';
+}
+
+function editEvent(entryId)
+{
+    var entry = findEntry(entryId);
+    displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
 
 function saveEvent() {
 	txtTitle = document.getElementById('txtTitle');
 	numId = document.getElementById("numId");
 	txtBody = document.getElementById('txtBody');
+    txtSummary =  document.getElementById('txtSummary');
+    txtDecisions = document.getElementById('txtDecisions'); 
+    txtOutcomes = document.getElementById('txtOutcomes');
 
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + numId.value);
-	entry.update(
+    entry.once('value').then(function(snapshot) {
+       entry.update(
 		{
-			Id: parseInt(document.getElementById("numId").value),
-			Title: document.getElementById('txtTitle').value,
-			Summary: document.getElementById('txtSummary').value,
-			Decisions: document.getElementById('txtDecisions').value,
-			Outcomes: document.getElementById('txtOutcomes').value,
+			Id: numId.value,
+			Title: txtTitle.value,
+			Summary: txtSummary.value,
+			Decisions: txtDecisions.value,
+			Outcomes: txtOutcomes.value,
 			Date: Date()
-		});
+		}); 
+        if(snapshot.val() != null && snapshot.val().Id == parseInt(numId.value))
+            {
+                entry.child("Archive").update(snapshot.val());
+            }
+    });
+	
 
 	setUpJournal();
 	contentDisplay.innerHTML = "Saved";

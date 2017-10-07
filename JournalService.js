@@ -86,7 +86,7 @@ function displayEntries(journalDateCreated) {
        else
            {
                	entries.forEach(function (entry) {
-		if (entry != "") {
+		if (entry.val().length != 0) {
 			entriesDisplay.innerHTML +=
 				'<table>\
 				<tbody>\
