@@ -42,7 +42,12 @@ function getEntryData(data) {
 }
 
 function displayEntries() {
-	var entryValues = Object.values(entries);
+    var entryValues = "";
+    if(entries != null)
+        {
+            entryValues = Object.values(entries);            
+        }
+    
 	if(entryValues != "") {
         entriesDisplay.innerHTML = "";
         

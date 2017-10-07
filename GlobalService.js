@@ -39,4 +39,9 @@ function getCurrentUser()
 {
     return getFirebaseAuth().currentUser;
 }
+function signUserOut()
+{
+    firebase.auth().signOut();
+    window.location = "SignInView.html";
+}
 
