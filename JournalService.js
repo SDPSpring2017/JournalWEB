@@ -46,8 +46,7 @@ function displayJournals() {
 					<button onclick="displayEntries(' + journal.DateCreated + ')">' +
 						journal.Title +
 					'</button>\
-                    <label>Date Created: '+ journal.DateCreated +'\
-				</div>';
+                    </div>';
 		}
 	});
 }
