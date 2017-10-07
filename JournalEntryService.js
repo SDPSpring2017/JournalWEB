@@ -1,4 +1,4 @@
-var txtTitle, numId, txtBody, btnEntries, entriesDisplay, contentDisplay;
+var txtTitle, txtBody, btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
 var showDeleted = false, showHidden = false, showActive = true;
@@ -105,26 +105,36 @@ function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
     if(entry != null)
         {
+            var deleteButton = '<button onclick = "deleteEntry('+ entry.Id + ')">Delete </button>';
+            var hideButton = '<button onclick = "hideEntry('+ entry.Id + ')">Hide </button>';
+            var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+            if(entry.IsDeleted ==1)
+                {
+                    deleteButton = "";
+                    editButton = "";
+                    hideButton = "";
+                }
+            if(entry.IsHidden == 1)
+                {
+                    hideButton = '<button onclick = "unhideEntry('+ entry.Id + ')">Unhide </button>'
+                }
             contentDisplay.innerHTML =
 		entry.Id + ': ' + entry.Title + '<br>' + entry.Date + 
 		'<br>Summary<br>' + entry.Summary +
 		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes +
-		'<br><button onclick = "deleteEntry('+ entry.Id + ')">Delete </button>' + 
-        '<button onclick = "hideEntry('+ entry.Id + ')">Hide </button>' +
-        '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
-            //TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
+		'<br>Outcomes<br>' + entry.Outcomes +'<br>'+
+		deleteButton + hideButton + editButton;
         }
 	
 }
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
 	contentDisplay.innerHTML = 
-		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><input id="numId" type="number" placeholder="Entry ID" value="' + id + '"><br>\
+		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
 		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
 		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent()">Save</button>';
+		<button id="btnSave" onclick="saveEvent('+id+')">Save</button>';
 }
 
 function editEvent(entryId)
@@ -133,26 +143,28 @@ function editEvent(entryId)
     displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
 
-function saveEvent() {
+function saveEvent(id) {
     var isDeleted = 0;
     var isHidden = 0;
+    var entryId = (id == undefined)? new Date().getTime() : id;
+     
 	txtTitle = document.getElementById('txtTitle');
-	numId = document.getElementById("numId");
 	txtBody = document.getElementById('txtBody');
     txtSummary =  document.getElementById('txtSummary');
     txtDecisions = document.getElementById('txtDecisions'); 
     txtOutcomes = document.getElementById('txtOutcomes');
 
-	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + numId.value);
+	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
     entry.once('value').then(function(snapshot) {
         if(snapshot.val() != null)
             {
                isDeleted = snapshot.val().IsDeleted;
                isHidden = snapshot.val().IsHidden;
+                entryId = snapshot.val().Id;
             }
             entry.update(
 		{
-			Id: numId.value,
+			Id: entryId,
 			Title: txtTitle.value,
 			Summary: txtSummary.value,
 			Decisions: txtDecisions.value,
@@ -161,7 +173,7 @@ function saveEvent() {
             IsDeleted : isDeleted,
             IsHidden : isHidden
 		}); 
-        if(snapshot.val() != null && snapshot.val().Id == parseInt(numId.value))
+        if(snapshot.val() != null)
             {
                 entry.child("Archive").update(snapshot.val());
             }
@@ -171,15 +183,20 @@ function saveEvent() {
 	
 
 	setUpJournal();
-	contentDisplay.innerHTML = "Saved";
 }
     
 function deleteEntry(entryId)
 {
-    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+    if (confirm('Are you sure you want to deleted this entry?')) 
+    {
+        var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
 	currentEntryRef.once('value').then(function (entry) {
-		currentEntryRef.update({ IsDeleted: 1})
+		currentEntryRef.update({ IsDeleted: 1, IsHidden: 0})
 	});
+    alert("Entry has been deleted.");
+    }
+    
+    setUpJournal();
 }
 function hideEntry(entryId)
 {
@@ -187,6 +204,17 @@ function hideEntry(entryId)
 	currentEntryRef.once('value').then(function (entry) {
 		currentEntryRef.update({ IsHidden: 1})
 	});
+    alert("Entry has been hidden");
+    setUpJournal();
+}
+function unhideEntry(entryId)
+{
+    var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	currentEntryRef.once('value').then(function (entry) {
+		currentEntryRef.update({ IsHidden: 0})
+	});
+    alert("Entry has been unhidden");
+    setUpJournal();
 }
 function filterEntriesByStatus()
 {
