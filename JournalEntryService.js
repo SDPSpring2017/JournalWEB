@@ -2,6 +2,8 @@ var txtTitle, txtBody, btnEntries, entriesDisplay, contentDisplay;
 var database;
 var entries;
 var showDeleted = false, showHidden = false, showActive = true;
+var fileUpload;
+var fileAttached = false;
 function setUp() {
 	setUpDatabase();
 	firebase.auth().onAuthStateChanged(function (currentUser) {
@@ -103,6 +105,7 @@ function displayEntryContent(entryId) {
 		var deleteButton = '<button onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
 		var hideButton = '<button onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
 		var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+        var attachedFileButton = "";
 		if (entry.IsDeleted == 1) {
 			deleteButton = "";
 			editButton = "";
@@ -111,16 +114,22 @@ function displayEntryContent(entryId) {
 		if (entry.IsHidden == 1) {
 			hideButton = '<button onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
 		}
+        if(entry.AttachedFileName != null && entry.AttachedFileName != undefined)
+            {
+                attachedFileButton = '<button id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
+            }
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + '<br>' + entry.Date +
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
+            attachedFileButton +
 			deleteButton + hideButton + editButton + '<button id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
 	}
 }
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
+    //TODO display the file editor
 	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
@@ -129,7 +138,15 @@ function displayEntryForm(title, id, summary, decisions, outcomes) {
 		<button id="btnSave" onclick="saveEvent('+ id + ')">Save</button>';
 }
 
+fileButton.addEventListener('change', function (e) {
+    //Get file
+    fileUpload = e.target.files[0];
+    fileAttached = true;
+});
+
+
 function editEvent(entryId) {
+    document.getElementById("entryFileUpload").style.display='block';
 	var entry = findEntry(entryId);
 	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
@@ -138,7 +155,6 @@ function saveEvent(id) {
 	var isDeleted = 0;
 	var isHidden = 0;
 	var entryId = (id == undefined) ? new Date().getTime() : id;
-
 	txtTitle = document.getElementById('txtTitle');
 	txtBody = document.getElementById('txtBody');
 	txtSummary = document.getElementById('txtSummary');
@@ -168,9 +184,97 @@ function saveEvent(id) {
 	}
 
 	});
-
-	setUpJournal();
+    uploadFile(entryId);
+   	setUpJournal();
     contentDisplay.innerHTML = "";
+}
+
+function uploadFile(entryId)
+{
+    if(fileUpload !=null)
+        {
+        //Create a storage ref
+    var storageRef = firebase.storage().ref('AttachedFiles/' + entryId
+        + "/" + fileUpload.name);
+            //Upload file
+    var task = storageRef.put(fileUpload);
+
+    //Update progress bar
+    task.on('state_changed',
+        function progress(snapshot) {
+            var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            //TODO: console out the percentage complete of upload
+        },
+
+        function error(err) {
+            console.log("File Upload error: " + err);
+        },
+
+        function complete() {
+        alert("File " + fileUpload.name + " has been uploaded.");
+        var downloadUrl = task.snapshot.downloadURL;
+        setAttachedFileAttribute(entryId, downloadUrl);
+        document.getElementById("entryFileUpload").style.display = 'none';
+        
+        
+        }
+    );
+        }
+    
+     
+}
+
+function setAttachedFileAttribute(entryId, downloadURL)
+{
+    
+    var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	entry.once('value').then(function (snapshot) {
+        entry.update({AttachedFileName : fileUpload.name,
+                     DownloadLinkForFile: downloadURL});
+    fileUpload = null;
+    fileAttached = false;
+    });
+    
+    
+}
+function getEntryAttachedFiles(entryId)
+{
+//TODO: change to automatic download instead of opening
+    var downloadURLRef = null;
+    var entry = findEntry(entryId);
+    
+    /*
+    var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);*/
+   // entry.once('value').then(function(snapshot){
+        if(entry.DownloadLinkForFile != null && entry.DownloadLinkForFile != undefined)
+            {
+                var url = entry.DownloadLinkForFile;
+                window.open(url, '_blank');
+                /*
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.responseType = 'blob';
+                httpRequest.onload = function(event){
+                    var blob = httpRequest.response;
+                };
+                httpRequest.open('GET', url);
+                httpRequest.send();*/
+               /*downloadURLRef =  firebase.storage().ref('AttachedFiles/' + entryId + "/" + entry.AttachedFileName).getDownloadURL()
+                   downloadURLRef.then(function(url){
+                attachedFileURL = url;
+                var httpRequest = new XMLHttpRequest();
+                httpRequest.responseType = 'blob';
+                httpRequest.onload = function(event){
+                    var blob = httpRequest.response;
+                };
+                httpRequest.open('GET', url);
+                httpRequest.send();*/
+        
+    }//);
+                
+            //}
+               
+    //});
+
 }
 
 function deleteEntry(entryId) {

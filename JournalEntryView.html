@@ -24,7 +24,6 @@
     </nav> 
     </head>
     <body onload="setUp()">
-		
 		<button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button>
         <div id="entrySearchDiv">
         <input id="entrySearchTxt" type="text">
@@ -40,7 +39,11 @@
         </div>
 		<div id="entriesDisplay">
         </div>
-		<div id="contentDisplay"></div>
+		<div id="contentDisplay">
+        </div>
+        <div id="entryFileUpload" style="display:none"><!-- this will only be displayed when an entry has been selected to edit-->
+        <input type="file" id="fileButton" multiple size="50" ><!-- event listener is added to this button so it has to be present before the js is loaded, aka why its not inline in js-->
+        </div>
         
         
      <script src="GlobalService.js" type="text/javascript"></script>
