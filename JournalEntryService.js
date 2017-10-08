@@ -48,8 +48,6 @@ function displayEntries() {
 	if (entryValues != "") {
 		entriesDisplay.innerHTML = "";
 		entryValues.forEach(function (entry) {
-			entriesDisplay.innerHTML = "";
-			entryValues.forEach(function (entry) {
 				if (entry != "") {
 					if (entry.IsDeleted == 1 && showDeleted) {
 						entriesDisplay.innerHTML +=
@@ -73,13 +71,10 @@ function displayEntries() {
 						<button onclick="displayEntryContent(' + entry.Id + ')">' +
 								entry.Date +
 							'</button>\
-						<button onclick = "deleteEntry('+ entry.Id + ')"> + Delete </button>\
-						<button onclick = "hideEntry('+ entry.Id + ')"> + Hide </button>\
 						</div>';
 					}
 				}
 
-			});
 		});
 	}
 	else {
@@ -101,17 +96,6 @@ function findEntry(entryId) {
 function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
 	if (entry != null) {
-		contentDisplay.innerHTML =
-		entry.Id + ': ' + entry.Title + '<br>' + entry.Date +
-		'<br>Summary<br>' + entry.Summary +
-		'<br>Key Decisions<br>' + entry.Decisions +
-		'<br>Outcomes<br>' + entry.Outcomes +
-		'<br><button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>' +
-		'<br><button id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
-		//TODO: maybe the action buttons should be here instead, it depends on whether the og entry button still exists on the screen which I'm pretty sure it does
-	}
-
-	if (entry != null) {
 		var deleteButton = '<button onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
 		var hideButton = '<button onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
 		var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
@@ -128,7 +112,7 @@ function displayEntryContent(entryId) {
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
-			deleteButton + hideButton + editButton;
+			deleteButton + hideButton + editButton + '<button id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
 	}
 }
 
@@ -175,20 +159,18 @@ function saveEvent(id) {
 			IsDeleted: isDeleted,
 			IsHidden: isHidden
 		});
-		if (snapshot.val() != null && snapshot.val().Id == parseInt(numId.value)) {
-			entry.child("Archive").update(snapshot.val());
-		}
-	});
-	if (snapshot.val() != null) {
+        	if (snapshot.val() != null) {
 		entry.child("Archive").update(snapshot.val());
 	}
+
+	});
+
 	setUpJournal();
+    contentDisplay.innerHTML = "";
 }
 
 function deleteEntry(entryId) {
-	var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries").orderByChild("Id").equalTo(entryId);
-	entries = currentEntryRef.once('value').then(function (entry) {
-		entry.update({ IsDeleted: 1 })//hope this doesn't overwrite everything else in the entry 
+
 		if (confirm('Are you sure you want to deleted this entry?')) {
 			var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
 			currentEntryRef.once('value').then(function (entry) {
@@ -197,7 +179,6 @@ function deleteEntry(entryId) {
 			alert("Entry has been deleted.");
 		}
 		setUpJournal();
-	});
 }
 
 function hideEntry(entryId) {
@@ -222,15 +203,23 @@ function unhideEntry(entryId) {
 function getEntryHistory(entryId) {
 	var entryHistory = new Array();
 	var count = 0;
-	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);//).orderByChild("Id").equalTo(entryId);
+	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId + "/Archive");//).orderByChild("Id").equalTo(entryId);
 	entry.once('value').then(function (snapshot) {
-		var archive = snapshot.val().Archive;
-		while (archive != null) {
+		var archive = snapshot.val();
+                     while (archive != null) {
 			entryHistory[count] = archive;
 			count += 1;
-			archive = archive.Archive;
-		};
-		showEntryHistory(entryHistory);
+            if(archive.Archive != undefined)
+                {
+                    archive = archive.Archive;//how does this affect count?
+                }
+            else
+            {
+                archive = null;
+            }
+			
+		} 
+			showEntryHistory(entryHistory);
 	});
 }
 
@@ -238,7 +227,7 @@ function showEntryHistory(entryHistory) {
 	entryHistory = entryHistory.reverse();
 	contentDisplay.innerHTML += '<br><h3>Edit History</h3>';
 	if (entryHistory.length != 0) {
-		for (var i = 0; i < entryHistory.length - 1; ++i) {
+		for (var i = 0; i < entryHistory.length; ++i) {
 			contentDisplay.innerHTML +=
 				(i == 0 ? '<h4>Original entry</h3>Created on: ' : '<br><h4>Edit number ' + (i) + '</h3>Changed on:')
 			+ entryHistory[i].Date +
