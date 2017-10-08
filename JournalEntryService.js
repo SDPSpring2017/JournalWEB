@@ -130,6 +130,7 @@ function displayEntryContent(entryId) {
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
     //TODO display the file editor
+    document.getElementById("entryFileUpload").style.display='block';
 	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
@@ -146,7 +147,7 @@ fileButton.addEventListener('change', function (e) {
 
 
 function editEvent(entryId) {
-    document.getElementById("entryFileUpload").style.display='block';
+    
 	var entry = findEntry(entryId);
 	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
