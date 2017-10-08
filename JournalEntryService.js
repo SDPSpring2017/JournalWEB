@@ -36,13 +36,14 @@ function getEntryData(data) {
 	var dataValue = data.val();
 	console.log(dataValue);
 	entries = dataValue;
-	displayEntries();
+	displayEntries(entries);
 }
 
-function displayEntries() {
+function displayEntries(entriesData) {
 	var entryValues = "";
-	if (entries != null) {
-		entryValues = Object.values(entries);
+    var numberofDisplayedEntries = 0;
+	if (entriesData != null) {
+		entryValues = Object.values(entriesData);
 	}
 
 	if (entryValues != "") {
@@ -56,6 +57,7 @@ function displayEntries() {
 							entry.Date +
 						'</button>\
 					</div>';
+                        ++numberofDisplayedEntries;
 					}
 					if (entry.IsHidden && showHidden) {
 						entriesDisplay.innerHTML +=
@@ -64,6 +66,7 @@ function displayEntries() {
 								entry.Date +
 							'</button>\
 					</div>';
+                        ++numberofDisplayedEntries;
 					}
 					if (entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive) {
 						entriesDisplay.innerHTML +=
@@ -72,12 +75,13 @@ function displayEntries() {
 								entry.Date +
 							'</button>\
 						</div>';
+                        ++numberofDisplayedEntries;
 					}
 				}
 
 		});
 	}
-	else {
+	if(numberofDisplayedEntries == 0) {
 		entriesDisplay.innerHTML = "No entries to display";
 	}
 }
@@ -179,6 +183,7 @@ function deleteEntry(entryId) {
 			alert("Entry has been deleted.");
 		}
 		setUpJournal();
+    displayEntryContent(entryId);
 }
 
 function hideEntry(entryId) {
@@ -188,7 +193,8 @@ function hideEntry(entryId) {
 		currentEntryRef.update({ IsHidden: 1 })
 	});
 	alert("Entry has been hidden");
-	setUpJournal();
+	displayEntries(entries);
+    displayEntryContent(entryId);
 }
 
 function unhideEntry(entryId) {
@@ -197,7 +203,8 @@ function unhideEntry(entryId) {
 		currentEntryRef.update({ IsHidden: 0 })
 	});
 	alert("Entry has been unhidden");
-	setUpJournal();
+	displayEntries(entries);
+    displayEntryContent(entryId);
 }
 
 function getEntryHistory(entryId) {
@@ -246,7 +253,50 @@ function filterEntriesByStatus() {
 	showActive = document.getElementById("activeEntryCB").checked;
 	showDeleted = document.getElementById("deletedEntryCB").checked;
 	showHidden = document.getElementById("hiddenEntryCB").checked;
-	displayEntries();
+	displayEntries(entries);
+}
+
+function searchEntriesViaKeyWord()
+{
+    var results = new Array();
+    var searchTxt = document.getElementById("entrySearchTxt").value;
+    if(searchTxt=="")
+    {
+            setUpJournal();
+    }
+    else
+    {
+    var entryValues = Object.values(entries);
+    entryValues.forEach(function(entry)
+    {
+       if(entry !="")
+           {
+               if(entry.Title.includes(searchTxt))
+        {
+            results.push(entry);
+        }
+        else if(entry.Decisions.includes(searchTxt))
+            {
+                results.push(entry);
+            }
+        else if(entry.Outcomes.includes(searchTxt))
+            {
+                results.push(entry);
+            } 
+           }
+        
+    });  
+    if(results.length == 0)
+    {
+        entriesDisplay.innerHTML = "No entries matched your search.";
+        contentDisplay.innerHTML = "";
+    }
+else
+    {
+        displayEntries(results);
+        contentDisplay.innerHTML = "";
+    }
+    }
 }
 
 function getFirebaseAuth() {

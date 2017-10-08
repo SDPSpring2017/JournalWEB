@@ -18,7 +18,7 @@
     <ul class="nav navbar-nav"> 
         <li><a href="SignUpView.html">Register</a></li>
         <li><a onclick="signUserOut()">Sign Out</a></li>
-        <li><a href="JournalEntryView.html">Journal</a></li>
+        <li><a href="JournalView.html">Journals</a></li>
     </ul>
         </div>
     </nav> 
@@ -26,7 +26,11 @@
     <body onload="setUp()">
 		
 		<button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button>
-        <div id="entryStatusFilter">
+        <div id="entrySearchDiv">
+        <input id="entrySearchTxt" type="text">
+        <button id="btnSubmitSearch" class="btn btn-info" onclick="searchEntriesViaKeyWord()">Search</button>
+        </div>
+        <br><div id="entryStatusFilter">
         Show entries that are:
         <input id="activeEntryCB" type="checkbox" checked> Active 
         <input id="deletedEntryCB" type="checkbox"> Deleted 
