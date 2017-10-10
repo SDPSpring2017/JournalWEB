@@ -42,7 +42,7 @@ function displayJournals() {
 	journalValues.forEach(function (journal) {
 		if (journal != "") {
 			journalsDisplay.innerHTML +=
-				'<div>\
+				'<div id="journalBtn"> \
 					<button class="btn btn-default" onclick="displayEntries(' + journal.DateCreated + ')">' +
 						journal.Title +
 					'</button>\
@@ -87,21 +87,21 @@ function displayEntries(journalDateCreated) {
                	entries.forEach(function (entry) {
 		if (entry.val().length != 0) {
 			entriesDisplay.innerHTML +=
-				'<table>\
+				'<div class="container-fluid"><table align="left" class="table table-striped">\
 				<tbody>\
 					<tr>\
-						<td>' + entry.val().Id + ':' + entry.val().Title + '</td>\
+						<td id="tableTitle">' + entry.val().Id + ':' + ' ' + entry.val().Title + '</td>\
 					</tr>\
 						<td>' + entry.val().Summary + '</td>\
 					<tr>\
 				</tbody>\
-		</table>';
+		</table></div>';
 		}
 	});
 	entriesDisplay.innerHTML +=
-		'<button onclick="goToJournal(' + journalDateCreated + ')">' +
+		'<div id="journalBtn2" class="container-fluid"><button class="btn btn-info" onclick="goToJournal(' + journalDateCreated + ')">' +
 			"Go to journal" +
-		'</button>';
+		'</button></div>';
            }
    });
    

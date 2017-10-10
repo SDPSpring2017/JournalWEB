@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>Typo</title>
+    <link rel="stylesheet" type="text/css" href="stylesheet.css">
     <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script>
          <script src="GlobalService.js" type="text/javascript"></script>
      <script src="JournalService.js" type="text/javascript"></script>
@@ -26,14 +27,16 @@
     </nav> 
     </head>
     <body onload="setUp()">
+        <div id="btn1" class="container-fluid"> 
         <button id="CreateJournal" class="btn btn-info" onClick = " CreateNewJournal()">
         Create New Journal
         </button>
+        </div>
         
 		
-		<div id="journalsDisplay">
+		<div class="container-fluid" id="journalsDisplay">
         </div>
-        <div id="newJournal" style="display : none">
+        <div class="container-fluid" id="newJournal" style="display : none">
             <input id="newJournalTitle" type="text" placeholder="Enter your Journal Title here" />
             <button id="submitCreateJournal" class="btn btn-info" onclick="submitCreateJournal()">Create New Journal</button>
             </div>
