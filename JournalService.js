@@ -43,7 +43,7 @@ function displayJournals() {
 		if (journal != "") {
 			journalsDisplay.innerHTML +=
 				'<div>\
-					<button onclick="displayEntries(' + journal.DateCreated + ')">' +
+					<button class="btn btn-default" onclick="displayEntries(' + journal.DateCreated + ')">' +
 						journal.Title +
 					'</button>\
                     </div>';
