@@ -120,7 +120,7 @@ function displayEntryContent(entryId) {
             }
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + 
-			'<br>' + entry.Date +
+			'<br>' + entry.Date + 
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
