@@ -66,11 +66,33 @@ entryTable td {
 }
 
 searchTable{
-    align-self: left;
+    margin-left: 0px; 
+    margin-right: 0px; 
+    width: 100%; 
 }
 
 #entryStatusFilter{
-    margin-top: 150px; 
+    margin-top: 120px; 
+}
+
+#activeEntryCB{
+    margin: 5px 5px 5px 5px; 
+}
+
+#deletedEntryCB{
+    margin: 5px 5px 5px 5px; 
+}
+
+#hiddenEntryCB{
+    margin: 5px 5px 5px 5px;
+}
+
+#btnFilter{
+    margin: 5px 5px 5px 5px;
+}
+
+#entryBreak{
+    margin: 10px 10px 10px 10px; 
 }
 
 

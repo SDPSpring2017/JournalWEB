@@ -25,18 +25,16 @@
     </nav> 
     </head>
     <body class="container-fluid" onload="setUp()"> 
-        <table align="left"> 
+        <table class="searchTable" align="left"> 
             <tr>
-                <td><input id="entrySearchTxt" type="text"></td>
-                <td><button id="btnSubmitSearch" class="btn btn-info" onclick="searchEntriesViaKeyWord()">Search</button></td>
-            </tr>
-            <tr>
-                <td></td>
                 <td><button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button></td>
-            <tr>
+                <td><input id="entrySearchTxt" type="text">
+                    <button id="btnSubmitSearch" class="btn btn-info" onclick="searchEntriesViaKeyWord()">Search
+                </td>
+            </tr>
         </table> 
         <div id="entryStatusFilter">
-            Show entries that are:
+            Show entries that are:    
             <input id="activeEntryCB" type="checkbox" checked> Active 
             <input id="deletedEntryCB" type="checkbox"> Deleted 
             <input id="hiddenEntryCB" type="checkbox">

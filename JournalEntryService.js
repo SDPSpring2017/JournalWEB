@@ -102,9 +102,9 @@ function findEntry(entryId) {
 function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
 	if (entry != null) {
-		var deleteButton = '<button onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
-		var hideButton = '<button onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
-		var editButton = '<button id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+		var deleteButton = '<button class="btn btn-info" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
+		var hideButton = '<button class="btn btn-info" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
+		var editButton = '<button class="btn btn-info" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
         var attachedFileButton = "";
 		if (entry.IsDeleted == 1) {
 			deleteButton = "";
@@ -112,19 +112,20 @@ function displayEntryContent(entryId) {
 			hideButton = "";
 		}
 		if (entry.IsHidden == 1) {
-			hideButton = '<button onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
+			hideButton = '<button class="btn btn-info" onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
 		}
         if(entry.AttachedFileName != null && entry.AttachedFileName != undefined)
             {
-                attachedFileButton = '<button id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
+                attachedFileButton = '<button class="btn btn-info" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
             }
 		contentDisplay.innerHTML =
-			entry.Id + ': ' + entry.Title + '<br>' + entry.Date +
+			entry.Id + ': ' + entry.Title + 
+			'<br>' + entry.Date +
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
             attachedFileButton +
-			deleteButton + hideButton + editButton + '<button id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
+			deleteButton + hideButton + editButton + '<button class="btn btn-info" id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
 	}
 }
 
