@@ -54,8 +54,8 @@ function displayEntries(entriesData) {
 				if (entry != "") {
 					if (entry.IsDeleted == 1 && showDeleted) {
 						entriesDisplay.innerHTML +=
-					'<div>\
-						<button onclick="displayEntryContent(' + entry.Id + ')" class="btnDeleted">' +
+					'<div class="btn btn-default" id="spacing">\
+						<button class="btn btn-default" onclick="displayEntryContent(' + entry.Id + ')" class="btnDeleted">' +
 							entry.Date +
 						'</button>\
 					</div>';
@@ -63,8 +63,8 @@ function displayEntries(entriesData) {
 					}
 					if (entry.IsHidden && showHidden) {
 						entriesDisplay.innerHTML +=
-						'<div>\
-						<button onclick="displayEntryContent(' + entry.Id + ')">' +
+						'<div id="spacing">\
+						<button class="btn btn-default" onclick="displayEntryContent(' + entry.Id + ')">' +
 								entry.Date +
 							'</button>\
 					</div>';
@@ -72,8 +72,8 @@ function displayEntries(entriesData) {
 					}
 					if (entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive) {
 						entriesDisplay.innerHTML +=
-							'<div>\
-						<button onclick="displayEntryContent(' + entry.Id + ')">' +
+							'<div id="spacing">\
+						<button class="btn btn-default" onclick="displayEntryContent(' + entry.Id + ')">' +
 								entry.Date +
 							'</button>\
 						</div>';

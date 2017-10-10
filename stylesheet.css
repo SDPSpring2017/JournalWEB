@@ -38,12 +38,25 @@ table td {
     padding-bottom: 10px; 
 }
 
+#spacing{
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+}
+
 #newJournalTitle{
     padding-top: 5px; 
-    padding-bottom: 10px; 
-    margin-top: 5px; 
+    padding-bottom: 5px; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
 }
 
 entryTable td {
     padding: 10px 10px 10px 10px; 
+}
+
+#entriesDisplay{
+    padding-top: 10px; 
+    padding-bottom: 10px; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
 }
