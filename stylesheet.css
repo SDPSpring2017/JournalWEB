@@ -60,3 +60,17 @@ entryTable td {
     margin-top: 10px; 
     margin-bottom: 10px; 
 }
+
+#entrySearch{
+    align-self: right;
+}
+
+searchTable{
+    align-self: left;
+}
+
+#entryStatusFilter{
+    margin-top: 150px; 
+}
+
+

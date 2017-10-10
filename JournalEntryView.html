@@ -24,26 +24,32 @@
         </div>
     </nav> 
     </head>
-    <body class="container-fluid" onload="setUp()">
-		<button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button>
-        <div id="entrySearchDiv">
-        <input id="entrySearchTxt" type="text">
-        <button id="btnSubmitSearch" class="btn btn-info" onclick="searchEntriesViaKeyWord()">Search</button>
-        </div>
-        <br><div id="entryStatusFilter">
-        Show entries that are:
-        <input id="activeEntryCB" type="checkbox" checked> Active 
-        <input id="deletedEntryCB" type="checkbox"> Deleted 
-        <input id="hiddenEntryCB" type="checkbox">
-        Hidden
-        <button id="btnFilter" class="btn btn-info" onclick="filterEntriesByStatus()">Filter</button>
+    <body class="container-fluid" onload="setUp()"> 
+        <table align="left"> 
+            <tr>
+                <td><input id="entrySearchTxt" type="text"></td>
+                <td><button id="btnSubmitSearch" class="btn btn-info" onclick="searchEntriesViaKeyWord()">Search</button></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><button id="btnNewEntry" class="btn btn-info" onclick="displayEntryForm('','','','','')">New Entry</button></td>
+            <tr>
+        </table> 
+        <div id="entryStatusFilter">
+            Show entries that are:
+            <input id="activeEntryCB" type="checkbox" checked> Active 
+            <input id="deletedEntryCB" type="checkbox"> Deleted 
+            <input id="hiddenEntryCB" type="checkbox">
+            Hidden
+            <button id="btnFilter" class="btn btn-info" onclick="filterEntriesByStatus()">Filter</button>
         </div>
 		<div id="entriesDisplay">
         </div>
 		<div id="contentDisplay">
         </div>
         <div id="entryFileUpload" style="display:none"><!-- this will only be displayed when an entry has been selected to edit-->
-        <input type="file" id="fileButton" multiple size="50" ><!-- event listener is added to this button so it has to be present before the js is loaded, aka why its not inline in js-->
+            <input type="file" id="fileButton" multiple size="50" ><!-- event listener is added to this button so it has to be present before the js is loaded, aka why its not inline in js-->
+        </div>
         </div>
         
         
