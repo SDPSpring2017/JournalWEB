@@ -120,7 +120,7 @@ function displayEntryContent(entryId) {
             }
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + 
-			'<br>' + entry.Date + 
+			'<br id="entryDate">' + entry.Date + 
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
@@ -137,7 +137,7 @@ function displayEntryForm(title, id, summary, decisions, outcomes) {
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
 		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
 		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
-		<button id="btnSave" onclick="saveEvent('+ id + ')">Save</button>';
+		<button id="btnSave" class="btn btn-info" onclick="saveEvent('+ id + ')">Save</button>';
 }
 
 fileButton.addEventListener('change', function (e) {

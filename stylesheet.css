@@ -95,4 +95,27 @@ searchTable{
     margin: 10px 10px 10px 10px; 
 }
 
+#txtTitle{
+    padding: 5px 5px 5px 5px; 
+    margin-bottom: 15px; 
+}
+
+#txtSummary{
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+}
+
+#txtDecisions{
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+}
+
+#txtOutcomes{
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+}
+
+#entryDate{
+    margin: 10px 10px 10px 10px; 
+}
 
