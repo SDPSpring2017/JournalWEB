@@ -2,7 +2,7 @@ function setUp()
 {
 	firebase.initializeApp(getConfig());
 	database = firebase.database();
-    realTimeAuthListenter();
+	realTimeAuthListenter();
 }
 
 function getBtnCreateAccount()
