@@ -25,6 +25,7 @@ function setUpJournal() {
 	entries = ref.once('value').then(function (snapshot) {
 		getEntryData(snapshot)
 	});
+
 }
 
 function getScreenElements() {
@@ -43,7 +44,7 @@ function getEntryData(data) {
 
 function displayEntries(entriesData) {
 	var entryValues = "";
-    var numberofDisplayedEntries = 0;
+	var numberofDisplayedEntries = 0;
 	if (entriesData != null) {
 		entryValues = Object.values(entriesData);
 	}
@@ -59,7 +60,7 @@ function displayEntries(entriesData) {
 							entry.Date +
 						'</button>\
 					</div>';
-                        ++numberofDisplayedEntries;
+						++numberofDisplayedEntries;
 					}
 					if (entry.IsHidden && showHidden) {
 						entriesDisplay.innerHTML +=
@@ -68,7 +69,7 @@ function displayEntries(entriesData) {
 								entry.Date +
 							'</button>\
 					</div>';
-                        ++numberofDisplayedEntries;
+						++numberofDisplayedEntries;
 					}
 					if (entry.IsDeleted == 0 && entry.IsHidden == 0 && showActive) {
 						entriesDisplay.innerHTML +=
@@ -77,7 +78,7 @@ function displayEntries(entriesData) {
 								entry.Date +
 							'</button>\
 						</div>';
-                        ++numberofDisplayedEntries;
+						++numberofDisplayedEntries;
 					}
 				}
 
@@ -105,7 +106,7 @@ function displayEntryContent(entryId) {
 		var deleteButton = '<button class="btn btn-info" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
 		var hideButton = '<button class="btn btn-info" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
 		var editButton = '<button class="btn btn-info" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
-        var attachedFileButton = "";
+		var attachedFileButton = "";
 		if (entry.IsDeleted == 1) {
 			deleteButton = "";
 			editButton = "";
@@ -114,24 +115,24 @@ function displayEntryContent(entryId) {
 		if (entry.IsHidden == 1) {
 			hideButton = '<button class="btn btn-info" onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
 		}
-        if(entry.AttachedFileName != null && entry.AttachedFileName != undefined)
-            {
-                attachedFileButton = '<button class="btn btn-info" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
-            }
+		if(entry.AttachedFileName != null && entry.AttachedFileName != undefined)
+			{
+				attachedFileButton = '<button class="btn btn-info" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
+			}
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + 
 			'<br id="entryDate">' + entry.Date + 
 			'<br>Summary<br>' + entry.Summary +
 			'<br>Key Decisions<br>' + entry.Decisions +
 			'<br>Outcomes<br>' + entry.Outcomes + '<br>' +
-            attachedFileButton +
+			attachedFileButton +
 			deleteButton + hideButton + editButton + '<button class="btn btn-info" id="btnHistory" onclick="getEntryHistory(' + entry.Id + ')">Show History</button>';
 	}
 }
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
-    //TODO display the file editor
-    document.getElementById("entryFileUpload").style.display='block';
+	//TODO display the file editor
+	document.getElementById("entryFileUpload").style.display='block';
 	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
@@ -141,14 +142,14 @@ function displayEntryForm(title, id, summary, decisions, outcomes) {
 }
 
 fileButton.addEventListener('change', function (e) {
-    //Get file
-    fileUpload = e.target.files[0];
-    fileAttached = true;
+	//Get file
+	fileUpload = e.target.files[0];
+	fileAttached = true;
 });
 
 
 function editEvent(entryId) {
-    
+	
 	var entry = findEntry(entryId);
 	displayEntryForm(entry.Title, entry.Id, entry.Summary, entry.Decisions, entry.Outcomes);
 }
@@ -181,115 +182,108 @@ function saveEvent(id) {
 			IsDeleted: isDeleted,
 			IsHidden: isHidden
 		});
-        	if (snapshot.val() != null) {
+		if (snapshot.val() != null) {
 		entry.child("Archive").update(snapshot.val());
 	}
 
 	});
-    uploadFile(entryId);
-   	setUpJournal();
-    contentDisplay.innerHTML = "";
+	uploadFile(entryId);
+	document.getElementById("contentDisplay").innerHTML = "";
+	document.getElementById("entryFileUpload").style.display = 'none';
+	setUpJournal();
 }
 
 function uploadFile(entryId)
 {
-    if(fileUpload !=null)
-        {
-        //Create a storage ref
-    var storageRef = firebase.storage().ref('AttachedFiles/' + entryId
-        + "/" + fileUpload.name);
-            //Upload file
-    var task = storageRef.put(fileUpload);
+	if(fileUpload !=null) {
+		//Create a storage ref
+		var storageRef = firebase.storage().ref('AttachedFiles/' + entryId + "/" + fileUpload.name);
+				//Upload file
+		var task = storageRef.put(fileUpload);
 
-    //Update progress bar
-    task.on('state_changed',
-        function progress(snapshot) {
-            var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            //TODO: console out the percentage complete of upload
-        },
+		//Update progress bar
+		task.on('state_changed',
+			function progress(snapshot) {
+				var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+				//TODO: console out the percentage complete of upload
+			},
 
-        function error(err) {
-            console.log("File Upload error: " + err);
-        },
+			function error(err) {
+				console.log("File Upload error: " + err);
+			},
 
-        function complete() {
-        alert("File " + fileUpload.name + " has been uploaded.");
-        var downloadUrl = task.snapshot.downloadURL;
-        setAttachedFileAttribute(entryId, downloadUrl);
-        document.getElementById("entryFileUpload").style.display = 'none';
-        
-        
-        }
-    );
-        }
-    
-     
+			function complete() {
+			alert("File " + fileUpload.name + " has been uploaded.");
+			var downloadUrl = task.snapshot.downloadURL;
+			setAttachedFileAttribute(entryId, downloadUrl);
+			document.getElementById("entryFileUpload").style.display = 'none';
+			});
+	}
 }
 
 function setAttachedFileAttribute(entryId, downloadURL)
 {
-    
-    var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+	
+	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
 	entry.once('value').then(function (snapshot) {
-        entry.update({AttachedFileName : fileUpload.name,
-                     DownloadLinkForFile: downloadURL});
-    fileUpload = null;
-    fileAttached = false;
-    });
-    
-    
+		entry.update({AttachedFileName : fileUpload.name,
+					 DownloadLinkForFile: downloadURL});
+	fileUpload = null;
+	fileAttached = false;
+	});
+	
+	
 }
 function getEntryAttachedFiles(entryId)
 {
 //TODO: change to automatic download instead of opening
-    var downloadURLRef = null;
-    var entry = findEntry(entryId);
-    
-    /*
-    var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);*/
+	var downloadURLRef = null;
+	var entry = findEntry(entryId);
+	
+	/*
+	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);*/
    // entry.once('value').then(function(snapshot){
-        if(entry.DownloadLinkForFile != null && entry.DownloadLinkForFile != undefined)
-            {
-                var url = entry.DownloadLinkForFile;
-                window.open(url, '_blank');
-                /*
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.responseType = 'blob';
-                httpRequest.onload = function(event){
-                    var blob = httpRequest.response;
-                };
-                httpRequest.open('GET', url);
-                httpRequest.send();*/
-               /*downloadURLRef =  firebase.storage().ref('AttachedFiles/' + entryId + "/" + entry.AttachedFileName).getDownloadURL()
-                   downloadURLRef.then(function(url){
-                attachedFileURL = url;
-                var httpRequest = new XMLHttpRequest();
-                httpRequest.responseType = 'blob';
-                httpRequest.onload = function(event){
-                    var blob = httpRequest.response;
-                };
-                httpRequest.open('GET', url);
-                httpRequest.send();*/
-        
-    }//);
-                
-            //}
-               
-    //});
+		if(entry.DownloadLinkForFile != null && entry.DownloadLinkForFile != undefined)
+			{
+				var url = entry.DownloadLinkForFile;
+				window.open(url, '_blank');
+				/*
+				var httpRequest = new XMLHttpRequest();
+				httpRequest.responseType = 'blob';
+				httpRequest.onload = function(event){
+					var blob = httpRequest.response;
+				};
+				httpRequest.open('GET', url);
+				httpRequest.send();*/
+			   /*downloadURLRef =  firebase.storage().ref('AttachedFiles/' + entryId + "/" + entry.AttachedFileName).getDownloadURL()
+				   downloadURLRef.then(function(url){
+				attachedFileURL = url;
+				var httpRequest = new XMLHttpRequest();
+				httpRequest.responseType = 'blob';
+				httpRequest.onload = function(event){
+					var blob = httpRequest.response;
+				};
+				httpRequest.open('GET', url);
+				httpRequest.send();*/
+		
+	}//);
+				
+			//}
+			   
+	//});
 
 }
 
 function deleteEntry(entryId) {
-
-		if (confirm('Are you sure you want to deleted this entry?')) {
-			var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
-			currentEntryRef.once('value').then(function (entry) {
-				currentEntryRef.update({ IsDeleted: 1, IsHidden: 0 })
-			});
-			alert("Entry has been deleted.");
-		}
-		setUpJournal();
-    displayEntryContent(entryId);
+	if (confirm('Are you sure you want to deleted this entry?')) {
+		var currentEntryRef = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
+		currentEntryRef.once('value').then(function (entry) {
+			currentEntryRef.update({ IsDeleted: 1, IsHidden: 0 })
+		});
+		alert("Entry has been deleted.");
+	}
+	setUpJournal();
+	displayEntryContent(entryId);
 }
 
 function hideEntry(entryId) {
@@ -299,8 +293,8 @@ function hideEntry(entryId) {
 		currentEntryRef.update({ IsHidden: 1 })
 	});
 	alert("Entry has been hidden");
-	displayEntries(entries);
-    displayEntryContent(entryId);
+	setUpJournal();
+	displayEntryContent(entryId);
 }
 
 function unhideEntry(entryId) {
@@ -309,8 +303,8 @@ function unhideEntry(entryId) {
 		currentEntryRef.update({ IsHidden: 0 })
 	});
 	alert("Entry has been unhidden");
-	displayEntries(entries);
-    displayEntryContent(entryId);
+	setUpJournal();
+	displayEntryContent(entryId);
 }
 
 function getEntryHistory(entryId) {
@@ -319,17 +313,15 @@ function getEntryHistory(entryId) {
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId + "/Archive");//).orderByChild("Id").equalTo(entryId);
 	entry.once('value').then(function (snapshot) {
 		var archive = snapshot.val();
-                     while (archive != null) {
+		while (archive != null) {
 			entryHistory[count] = archive;
 			count += 1;
-            if(archive.Archive != undefined)
-                {
-                    archive = archive.Archive;//how does this affect count?
-                }
-            else
-            {
-                archive = null;
-            }
+			if(archive.Archive != undefined) {
+				archive = archive.Archive;//how does this affect count?
+			}
+			else {
+				archive = null;
+			}
 			
 		} 
 			showEntryHistory(entryHistory);
@@ -359,50 +351,40 @@ function filterEntriesByStatus() {
 	showActive = document.getElementById("activeEntryCB").checked;
 	showDeleted = document.getElementById("deletedEntryCB").checked;
 	showHidden = document.getElementById("hiddenEntryCB").checked;
-	displayEntries(entries);
+	setUpJournal();
 }
 
 function searchEntriesViaKeyWord()
 {
-    var results = new Array();
-    var searchTxt = document.getElementById("entrySearchTxt").value;
-    if(searchTxt=="")
-    {
-            setUpJournal();
-    }
-    else
-    {
-    var entryValues = Object.values(entries);
-    entryValues.forEach(function(entry)
-    {
-       if(entry !="")
-           {
-               if(entry.Title.includes(searchTxt))
-        {
-            results.push(entry);
-        }
-        else if(entry.Decisions.includes(searchTxt))
-            {
-                results.push(entry);
-            }
-        else if(entry.Outcomes.includes(searchTxt))
-            {
-                results.push(entry);
-            } 
-           }
-        
-    });  
-    if(results.length == 0)
-    {
-        entriesDisplay.innerHTML = "No entries matched your search.";
-        contentDisplay.innerHTML = "";
-    }
-else
-    {
-        displayEntries(results);
-        contentDisplay.innerHTML = "";
-    }
-    }
+	var results = new Array();
+	var searchTxt = document.getElementById("entrySearchTxt").value;
+	if(searchTxt=="") {
+		setUpJournal();
+	}
+	else {
+		var entryValues = Object.values(entries);
+		entryValues.forEach(function(entry) {
+			if(entry !="") {
+				if(entry.Title.includes(searchTxt)) {
+					results.push(entry);
+				}
+				else if(entry.Decisions.includes(searchTxt)) {
+					results.push(entry);
+				}
+				else if(entry.Outcomes.includes(searchTxt)) {
+					results.push(entry);
+				}
+			}
+		});
+		if(results.length == 0) {
+			entriesDisplay.innerHTML = "No entries matched your search.";
+			contentDisplay.innerHTML = "";
+		}
+		else {
+			displayEntries(results);
+			contentDisplay.innerHTML = "";
+		}
+	}
 }
 
 function getFirebaseAuth() {
