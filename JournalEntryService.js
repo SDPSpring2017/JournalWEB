@@ -166,6 +166,7 @@ function saveEvent(id) {
 
 	var entry = database.ref("user/" + getCurrentUser().uid + "/Journals/" + localStorage.getItem("SelectedJournal") + "/Entries/" + entryId);
 	entry.once('value').then(function (snapshot) {
+		setUpJournal();
 		if (snapshot.val() != null) {
 			isDeleted = snapshot.val().IsDeleted;
 			isHidden = snapshot.val().IsHidden;
@@ -190,7 +191,6 @@ function saveEvent(id) {
 	uploadFile(entryId);
 	document.getElementById("contentDisplay").innerHTML = "";
 	document.getElementById("entryFileUpload").style.display = 'none';
-	setUpJournal();
 }
 
 function uploadFile(entryId)
