@@ -115,10 +115,9 @@ function displayEntryContent(entryId) {
 		if (entry.IsHidden == 1) {
 			hideButton = '<button class="btn btn-info" onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
 		}
-		if(entry.AttachedFileName != null && entry.AttachedFileName != undefined)
-			{
+		if(entry.AttachedFileName != null && entry.AttachedFileName != undefined) {
 				attachedFileButton = '<button class="btn btn-info" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
-			}
+		}
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + 
 			'<br id="entryDate">' + entry.Date + 
