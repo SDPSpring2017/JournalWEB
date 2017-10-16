@@ -34,7 +34,10 @@ function getJournals(data) {
 
 function displayJournals() {
 	//TODO add listener for new journals
-	var journalValues = Object.values(journals);
+	if (journals != null)
+	{
+		var journalValues = Object.values(journals);
+	}
 	journalsDisplay.innerHTML = "";
 	journalValues.forEach(function (journal) {
 		if (journal != "") {
@@ -72,15 +75,15 @@ function submitCreateJournal() {
 
 function displayEntries(journalDateCreated) {
 	database.ref("user/" + getCurrentUser().uid + "/Journals/" + journalDateCreated + "/Entries").once('value').then(function (entries){
-	 entriesDisplay.innerHTML = "";
-		if(entries.length ==0) {
-				entriesDisplay.innerHTML = "This journal does not contain any entries";
-			}
+		summaryDisplay.innerHTML = "";
+		if(entries.val() == null) {
+				summaryDisplay.innerHTML = "This journal does not contain any entries";
+		}
 		else {
 			entries.forEach(function (entry) {
 				if (entry.val().length != 0) {
-					entriesDisplay.innerHTML +=
-						'<div class="container-fluid"><table align="left" class="table table-striped">\
+					summaryDisplay.innerHTML +=
+						'<div id="entryTable" class="container-fluid"><table align="left" class="table table-striped">\
 							<tbody>\
 								<tr>\
 									<td id="tableTitle">' + entry.val().Id + ':' + ' ' + entry.val().Title + '</td>\
@@ -91,11 +94,11 @@ function displayEntries(journalDateCreated) {
 						</table></div>';
 				}
 			});
-			entriesDisplay.innerHTML +=
-				'<div id="journalBtn2" class="container-fluid"><button class="btn btn-info" onclick="goToJournal(' + journalDateCreated + ')">' +
-					"Go to journal" +
-				'</button></div>';
 		}
+		summaryDisplay.innerHTML +=
+			'<div id="journalBtn2" class="container-fluid"><button class="btn btn-info" onclick="goToJournal(' + journalDateCreated + ')">' +
+				"Go to journal" +
+			'</button></div>';
 	});
 }
 
