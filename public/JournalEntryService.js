@@ -130,21 +130,25 @@ function displayEntryContent(entryId) {
 }
 
 function displayEntryForm(title, id, summary, decisions, outcomes) {
-	//TODO display the file editor
-	document.getElementById("entryFileUpload").style.display='block';
 	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
 		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
 		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
 		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
+        <input type="file" id="fileButton" multiple size="50">\
 		<button id="btnSave" class="btn btn-info" onclick="saveEvent('+ id + ')">Save</button>';
+    attachFileListener();
 }
 
-fileButton.addEventListener('change', function (e) {
+function attachFileListener()
+{
+    fileButton.addEventListener('change', function (e) {
 	//Get file
 	fileUpload = e.target.files[0];
 	fileAttached = true;
 });
+}
+
 
 
 function editEvent(entryId) {
@@ -189,7 +193,6 @@ function saveEvent(id) {
 	});
 	uploadFile(entryId);
 	document.getElementById("contentDisplay").innerHTML = "";
-	document.getElementById("entryFileUpload").style.display = 'none';
 }
 
 function uploadFile(entryId)
@@ -215,9 +218,9 @@ function uploadFile(entryId)
 			alert("File " + fileUpload.name + " has been uploaded.");
 			var downloadUrl = task.snapshot.downloadURL;
 			setAttachedFileAttribute(entryId, downloadUrl);
-			document.getElementById("entryFileUpload").style.display = 'none';
-			});
-	}
+			
+	});
+}
 }
 
 function setAttachedFileAttribute(entryId, downloadURL)
