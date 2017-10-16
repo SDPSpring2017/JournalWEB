@@ -81,7 +81,6 @@ function displayEntries(entriesData) {
 						++numberofDisplayedEntries;
 					}
 				}
-
 		});
 	}
 	if(numberofDisplayedEntries == 0) {
