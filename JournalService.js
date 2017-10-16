@@ -80,7 +80,7 @@ function displayEntries(journalDateCreated) {
 			entries.forEach(function (entry) {
 				if (entry.val().length != 0) {
 					entriesDisplay.innerHTML +=
-						'<div class="container-fluid"><table align="left" class="table table-striped">\
+						'<div id="entryTable" class="container-fluid"><table align="left" class="table table-striped">\
 							<tbody>\
 								<tr>\
 									<td id="tableTitle">' + entry.val().Id + ':' + ' ' + entry.val().Title + '</td>\
