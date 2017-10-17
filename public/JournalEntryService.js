@@ -102,9 +102,9 @@ function findEntry(entryId) {
 function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
 	if (entry != null) {
-		var deleteButton = '<button class="btn btn-info" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
-		var hideButton = '<button class="btn btn-info" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
-		var editButton = '<button class="btn btn-info" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+		var deleteButton = '<button id="buttonSpacing" class="btn btn-info" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
+		var hideButton = '<button id="buttonSpacing" class="btn btn-info" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
+		var editButton = '<button id="buttonSpacing" class="btn btn-info" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
 		var attachedFileButton = "";
 		if (entry.IsDeleted == 1) {
 			deleteButton = "";

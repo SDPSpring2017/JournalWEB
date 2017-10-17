@@ -58,6 +58,11 @@ entryTable td {
 }
 
 #entriesDisplay{
+    width: 40%; 
+    float: left; 
+}
+
+#summaryDisplay{
     float: right; 
     width: 50%; 
     margin-right: 250px; 
@@ -65,6 +70,25 @@ entryTable td {
     border-width: 2px; 
     border-style: solid; 
     margin-bottom: 20px; 
+}
+
+#newJournal{
+    width: 30%; 
+
+}
+
+#buttonSpacing{
+    padding: 10px 10px 10px 10px; 
+}
+
+#contentDisplay{
+    border-color: black; 
+    border-width: 2px; 
+    border-style: solid; 
+    margin-bottom: 20px; 
+    width: 50%; 
+    float: right; 
+    margin-right: 100px; 
 }
 
 #entrySearch{
