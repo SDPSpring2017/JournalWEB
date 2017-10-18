@@ -284,7 +284,7 @@ function deleteEntry(entryId) {
 		alert("Entry has been deleted.");
 	}
 	setUpJournal();
-	displayEntryContent(entryId);
+	contentDisplay.innerHTML = "";
 }
 
 function hideEntry(entryId) {
@@ -295,7 +295,7 @@ function hideEntry(entryId) {
 	});
 	alert("Entry has been hidden");
 	setUpJournal();
-	displayEntryContent(entryId);
+	contentDisplay.innerHTML = "";
 }
 
 function unhideEntry(entryId) {
@@ -305,7 +305,7 @@ function unhideEntry(entryId) {
 	});
 	alert("Entry has been unhidden");
 	setUpJournal();
-	displayEntryContent(entryId);
+	contentDisplay.innerHTML = "";
 }
 
 function getEntryHistory(entryId) {

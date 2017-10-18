@@ -39,7 +39,7 @@ function signInEvent()
         const password = txtPassword.value;
        const promise = getFirebaseAuth().signInWithEmailAndPassword(email, password);
         console.log(getFirebaseAuth());
-        promise.catch(e => {console.log("Error: "); console.log(e.message)});
+        promise.catch(e => {console.log("Error: "); console.log(e.message); alert("The entered email or password was incorrect. Please try again");});
        firebase.auth().onAuthStateChanged(function(currentUser) {
     if (currentUser) {
     window.location = "JournalView.html";

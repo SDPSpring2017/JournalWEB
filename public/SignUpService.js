@@ -48,7 +48,7 @@ function SignUpEvent()
         }
         else
         {
-        alert("There was a sign up error. Please try again.");
+        alert("Incorrect details entered, please verify: you have entered your details into each text field and your password is at least 6 characters long");
         }
     
 		     
@@ -56,9 +56,10 @@ function SignUpEvent()
 function createAuthenticationUser()
 {
     var signUpError = false;
-    
     var email = getTxtEmailInput();
 	var password = getTxtPasswordInput();
+    signUpError = (getTxtFNameInput().length < 1 || getTxtLNameInput().length < 1 || email.length < 1 || password.length < 6);
+    if(signUpError) return signUpError;
 	var newUser = getFirebaseAuth().createUserWithEmailAndPassword(email, password);
     newUser.catch(e => {console.log(e.message); signUpError = true;});
     return signUpError;
