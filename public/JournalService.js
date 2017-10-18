@@ -17,7 +17,7 @@ function setUpDatabase() {
 
 
 function setUpJournals() {
-	//TODO check if they have any journals in the first place
+	
 	var journalsRef = database.ref("user/" + getCurrentUser().uid + "/Journals");
 	journals = journalsRef.once('value').then(function (snapshot){
 		getJournals(snapshot);
@@ -33,13 +33,16 @@ function getJournals(data) {
 }
 
 function displayJournals() {
+    var journalValues;
 	//TODO add listener for new journals
 	if (journals != null)
 	{
-		var journalValues = Object.values(journals);
+		journalValues = Object.values(journals);
 	}
 	journalsDisplay.innerHTML = "";
-	journalValues.forEach(function (journal) {
+    if(journalValues !=undefined && journalValues !=null)
+        {
+            journalValues.forEach(function (journal) {
 		if (journal != "") {
 			journalsDisplay.innerHTML +=
 				'<div id="journalBtn"> \
@@ -49,6 +52,14 @@ function displayJournals() {
 				</div>';
 		}
 	});
+             summaryDisplay.innerHTML = "Please select a journal to view entries preview";
+        }
+    else
+    {
+       journalsDisplay.innerHTML = "No journals to display"; 
+       
+    }
+	
 }
 
 function CreateNewJournal(){

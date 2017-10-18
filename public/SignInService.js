@@ -7,6 +7,7 @@ function setUp()
 	dbRef = firebase.database();
 	getScreenElements();
     realTimeAuthListenter();
+    alreadySignedIn();
 }
 
 function getScreenElements()
@@ -18,6 +19,16 @@ function getScreenElements()
 	btnSignIn = document.getElementById('btnSignIn');
 	btnSignUp = document.getElementById('btnSignUp');
 	btnSignOut = document.getElementById('btnSignOut'); 
+}
+
+function alreadySignedIn()
+{
+firebase.auth().onAuthStateChanged(currentUser => {
+		if(currentUser)
+			{
+				window.location = "JournalView.html";
+			}
+    });
 }
 
 function signInEvent()
