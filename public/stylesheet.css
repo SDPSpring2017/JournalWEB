@@ -78,7 +78,7 @@ entryTable td {
 }
 
 #buttonSpacing{
-    padding: 10px 10px 10px 10px; 
+    margin: 10px 10px 10px 10px; 
 }
 
 #contentDisplay{
@@ -127,25 +127,31 @@ searchTable{
 
 #txtTitle{
     padding: 5px 5px 5px 5px; 
-    margin-bottom: 15px; 
+    margin: 10px 10px 10px 10px; 
 }
 
 #txtSummary{
-    margin-top: 5px; 
-    margin-bottom: 5px; 
+    margin: 10px 10px 10px 10px; 
 }
 
 #txtDecisions{
-    margin-top: 5px; 
-    margin-bottom: 5px; 
+    margin: 10px 10px 10px 10px;  
 }
 
 #txtOutcomes{
-    margin-top: 5px; 
-    margin-bottom: 5px; 
+    margin: 10px 10px 10px 10px; 
 }
 
 #entryDate{
     margin: 10px 10px 10px 10px; 
+    padding: 10px 10px 10px 10px; 
+}
+
+#fileButton{
+    margin: 10px 10px 10px 10px;
+}
+
+#btnSave{
+    margin: 10px 10px 10px 10px;
 }
 

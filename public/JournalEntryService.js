@@ -102,9 +102,9 @@ function findEntry(entryId) {
 function displayEntryContent(entryId) {
 	var entry = findEntry(entryId);
 	if (entry != null) {
-		var deleteButton = '<button id="buttonSpacing" class="btn btn-info" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
-		var hideButton = '<button id="buttonSpacing" class="btn btn-info" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
-		var editButton = '<button id="buttonSpacing" class="btn btn-info" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
+		var deleteButton = '<button id="buttonSpacing" class="btn btn-danger" onclick = "deleteEntry(' + entry.Id + ')">Delete </button>';
+		var hideButton = '<button id="buttonSpacing" class="btn btn-warning" onclick = "hideEntry(' + entry.Id + ')">Hide </button>';
+		var editButton = '<button id="buttonSpacing" class="btn btn-success" id="btnEdit" onclick="editEvent(' + entry.Id + ')">Edit</button>';
 		var attachedFileButton = "";
 		if (entry.IsDeleted == 1) {
 			deleteButton = "";
@@ -115,7 +115,7 @@ function displayEntryContent(entryId) {
 			hideButton = '<button class="btn btn-info" onclick = "unhideEntry(' + entry.Id + ')">Unhide </button>'
 		}
 		if(entry.AttachedFileName != null && entry.AttachedFileName != undefined) {
-				attachedFileButton = '<button class="btn btn-info" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
+				attachedFileButton = '<button class="btn btn-info" id="buttonSpacing" id="btnDownloadFile" onclick="getEntryAttachedFiles(' + entry.Id + ')">Open Attachment</button><br>'; 
 		}
 		contentDisplay.innerHTML =
 			entry.Id + ': ' + entry.Title + 
@@ -131,11 +131,11 @@ function displayEntryContent(entryId) {
 function displayEntryForm(title, id, summary, decisions, outcomes) {
 	contentDisplay.innerHTML =
 		'<input id="txtTitle" type="text" placeholder="Entry Title" value="' + title + '"><br>\
-		<label>Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
-		<label>Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
-		<label>Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
+		<label id="txtSummary">Summary<br><textarea id="txtSummary" type="text" placeholder="Summary">' + summary + '</textarea></label><br>\
+		<label id="txtDecisions">Key Decisions<br><textarea id="txtDecisions" type="text" placeholder="Key Decisions">' + decisions + '</textarea></label><br>\
+		<label id="txtOutcomes">Outcomes<br><textarea id="txtOutcomes" type="text" placeholder="Outcomes">' + outcomes + '</textarea></label><br>\
         <input type="file" id="fileButton" multiple size="50">\
-		<button id="btnSave" class="btn btn-info" onclick="saveEvent('+ id + ')">Save</button>';
+		<button id="btnSave" class="btn btn-success" onclick="saveEvent('+ id + ')">Save</button>';
     attachFileListener();
 }
 
